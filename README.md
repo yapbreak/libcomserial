@@ -5,6 +5,10 @@ on GNU/Linux (or any POSIX system with termios interface).
 
 ---
 
+[![build_status](https://gitlab.yapbreak.fr/libraries/libcomserial/badges/master/build.svg)](https://gitlab.yapbreak.fr/libraries/libcomserial/commits/master)
+
+---
+
 ## Download
 
 Source library are available on
