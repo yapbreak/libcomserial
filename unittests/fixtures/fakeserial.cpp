@@ -43,7 +43,7 @@ fake::serial::serial(const std::string &in, const std::string &out)
         arg1 << "pty,link=" << in << ",rawer";
         arg2 << "pty,link=" << out << ",rawer";
 
-        int ret = execl("socat", "socat",
+        int ret = execl("/usr/bin/socat", "socat",
                         arg1.str().c_str(),
                         arg2.str().c_str(),
                         (char *) NULL);
