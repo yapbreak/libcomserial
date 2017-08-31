@@ -1,0 +1,44 @@
+# ComSerial
+
+Library that allows any C/C++ application to communicate through a serial link
+on GNU/Linux (or any POSIX system with termios interface).
+
+---
+
+## Download
+
+Source library are available on
+https://gitlab.yapbreak.fr/libraries/libcomserial/artifacts_XXX.tar.gz.
+
+One can also simply clone repository to get the latest modification.
+
+## Dependencies
+
+ComSerial require the following libraries to work:
+
+- termios
+
+To have full test support, you need the aditionnal libraries and programs:
+
+- socat
+- cpputest
+- gcov and lcov (to get coverage report)
+
+## Compilation
+
+If you clone the repository, you must run the following command before going
+to next step:
+
+```bash
+./autogen.sh
+```
+
+If you download the archive directly, you can skip this step. Then, simply runs
+the classical autotools build step:
+
+```bash
+./configure
+make
+make check # to test library
+sudo make install
+```

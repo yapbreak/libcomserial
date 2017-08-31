@@ -1,0 +1,51 @@
+stages:
+    - build
+    - test
+    - deploy
+
+build:
+    stage: build
+    script:
+        - ./autogen.sh
+        - ./configure
+        - make
+
+check:
+    stage: test
+    script:
+        - ./autogen.sh
+        - ./configure
+        - make
+        - make check
+    dependencies:
+        - build
+
+distribute:
+    stage: deploy
+    script:
+        - ./autogen.sh
+        - ./configure
+        - make dist
+    artifacts:
+        paths:
+            - libcomserial-*.tar.gz
+        expire_in: 1 week
+    except:
+        - tags
+    dependencies:
+        - build
+
+distribute-release:
+    stage: deploy
+    script:
+        - ./autogen.sh
+        - ./configure
+        - make dist
+    artifacts:
+        paths:
+            - libcomserial-*.tar.gz
+    only:
+        - tags
+    dependencies:
+        - check
+

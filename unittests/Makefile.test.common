@@ -1,0 +1,22 @@
+include $(top_srcdir)/Makefile.common
+
+TEST_ROOT = $(top_srcdir)/unittests
+
+# Enable Memory leak detector
+LEAK_FLAGS = -include CppUTest/MemoryLeakDetectorNewMacros.h
+
+FIXTURES  = -I$(TEST_ROOT)/fixtures
+FIXTURES += -include $(TEST_ROOT)/fixtures/fixtures.h
+
+TESTCFLAGS = $(AM_CFLAGS)\
+			 $(CPPUTEST_CFLAGS)\
+			 $(FIXTURES)\
+			 $(LEAK_FLAGS)
+
+TESTCXXFLAGS = $(AM_CXXFLAGS)\
+			   $(CPPUTEST_CFLAGS)\
+			   $(FIXTURES)\
+			   $(LEAK_FLAGS)
+
+TESTLDFLAGS  = $(AM_LDFLAGS) $(CPPUTEST_LIBS)
+TESTLDFLAGS += -L$(top_builddir)/unittests/fixtures
