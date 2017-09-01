@@ -53,7 +53,7 @@ endif # LCOV
 if GCOVR
 
 gcovr-coverage-report:
-	gcovr -r . -e "ut_.*" --xml -o "coverage-report.xml"
+	gcovr -r . --exclude-directories="unittests" --xml -o "coverage-report.xml"
 
 else # GCOVR
 
