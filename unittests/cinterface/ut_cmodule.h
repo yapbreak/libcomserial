@@ -31,4 +31,9 @@ TEST(cinterface_module, open_non_existing)
     POINTERS_EQUAL(NULL, s);
 }
 
+TEST(cinterface_module, close_non_existing)
+{
+    serialcomm_destroy_device(NULL);
+}
+
 #endif /* end of include guard: UT_CMODULE_H_UJEVLXFG */
