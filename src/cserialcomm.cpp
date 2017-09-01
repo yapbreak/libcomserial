@@ -1,9 +1,10 @@
 #include "serialcomm/cserialcomm.h"
+#include "serialcomm/cppserialcomm.h"
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdlib>
 
 struct serialcomm_s {
+    com::serial *dev;
 };
 
 

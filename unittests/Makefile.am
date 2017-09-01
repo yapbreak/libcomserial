@@ -1,3 +1,3 @@
 ACLOCAL_AMFLAGS = -I $(top_srcdir)/m4
 
-SUBDIRS = fixtures cinterface
+SUBDIRS = fixtures cinterface cppinterface
