@@ -12,6 +12,13 @@ namespace com {
         public:
             explicit serial(const std::string &device);
 
+
+        private:
+            void open_device(const char *device);
+
+
+        private:
+            int m_fd;
     };
 
 };

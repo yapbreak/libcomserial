@@ -6,6 +6,8 @@
 #include <CppUTest/TestHarness.h>
 #include <string>
 
+#include "logger.h"
+
 TEST_GROUP(cppinterface_module)
 {
     fake::serial *m_serial;
@@ -32,7 +34,17 @@ TEST(cppinterface_module, open_non_existing)
                  serial = new com::serial("unavailable"));
 
     delete serial;
-}
+};
+
+SOCAT_TEST(cppinterface_module, open_existing)
+{
+    try {
+        com::serial serial("com_in");
+    } catch (std::exception &e) {
+        ELOG() << e.what();
+        FAIL("Exception thrown");
+    }
+};
 
 
 #endif /* end of include guard: UT_CPPMODULE_H_OWBGUT0J */
