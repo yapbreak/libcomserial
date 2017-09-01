@@ -66,16 +66,6 @@ namespace logger {
                     }
                 }
 
-                if (i % 16 != 0) {
-                    output << offset.str();
-                    output << std::setfill(' ') << std::setw(49)
-                           << std::left << hexa.str();
-                    output << "|";
-                    output << std::setfill(' ') << std::setw(17)
-                           << std::left << ascii.str();
-                    output << "|";
-                }
-
                 return output.str();
             }
 
@@ -115,16 +105,17 @@ namespace logger {
         trace,
     };
 
-    template<std::ostream &C>
     class InternalLog: public std::ostream
     {
         public:
-            InternalLog(log_level level, const log_location &loc)
-                : std::ostream(C.rdbuf())
+            InternalLog(log_level level, const log_location &loc,
+                        std::ostream &destination)
+                : std::ostream(destination.rdbuf())
                 , m_level(level)
                 , m_location(loc)
+                , m_output(destination)
             {
-                print_header(C);
+                print_header();
             }
 
             virtual ~InternalLog()
@@ -132,18 +123,12 @@ namespace logger {
                 *this << "\n";
             }
 
-            template<typename T, std::ostream &IC>
-            friend InternalLog<IC> &operator<<(InternalLog<IC> &, const T &);
+            template<typename T>
+            friend InternalLog &operator<<(InternalLog &, const T &);
 
             // Additional overload to handle ostream specific IO manipulators
-            template<std::ostream &IC>
-            friend InternalLog<IC> &operator<<(InternalLog<IC> &,
-                                               std::ostream &(*)(std::ostream &));
-
-            std::ostream &get_ostream()
-            {
-                return *this;
-            }
+            friend InternalLog &operator<<(InternalLog &,
+                                           std::ostream &(*)(std::ostream &));
 
         private:
             char char_from_level(enum log_level l)
@@ -172,29 +157,29 @@ namespace logger {
                 }
             }
 
-            void print_header(std::ostream &out)
+            void print_header()
             {
-                out << "[" << char_from_level(m_level) << "] "
-                    << m_location.m_file << ":"
-                    << m_location.m_line << "("
-                    << m_location.m_function << ") ";
+                m_output << "[" << char_from_level(m_level) << "] "
+                         << m_location.m_file << ":"
+                         << m_location.m_line << "("
+                         << m_location.m_function << ") ";
             }
 
         private:
             log_level m_level;
             log_location m_location;
+            std::ostream &m_output;
     };
 
-    template<typename T, std::ostream &C>
-    inline InternalLog<C> &operator<<(InternalLog<C> &out, const T &value)
+    template<typename T>
+    inline InternalLog &operator<<(InternalLog &out, const T &value)
     {
         static_cast<std::ostream &>(out) << value;
         return out;
     }
 
-    template<std::ostream &C>
-    inline InternalLog<C> &operator<<(InternalLog<C> &out,
-                                      std::ostream &(*f)(std::ostream &))
+    inline InternalLog &operator<<(InternalLog &out,
+                                   std::ostream &(*f)(std::ostream &))
     {
         static_cast<std::ostream &>(out) << f;
         return out;
@@ -202,41 +187,50 @@ namespace logger {
 };
 
 
-#define FLOG() logger::InternalLog<std::cerr>(logger::log_level::fatal, \
-                                              logger::log_location(__func__, \
-                                                                   __FILE__, \
-                                                                   __LINE__))
-#define ALOG() logger::InternalLog<std::cerr>(logger::log_level::alert, \
-                                              logger::log_location(__func__, \
-                                                                   __FILE__, \
-                                                                   __LINE__))
-#define CLOG() logger::InternalLog<std::cerr>(logger::log_level::crit, \
-                                              logger::log_location(__func__, \
-                                                                   __FILE__, \
-                                                                   __LINE__))
-#define ELOG() logger::InternalLog<std::cerr>(logger::log_level::error, \
-                                              logger::log_location(__func__, \
-                                                                   __FILE__, \
-                                                                   __LINE__))
-#define WLOG() logger::InternalLog<std::cerr>(logger::log_level::warn, \
-                                              logger::log_location(__func__, \
-                                                                   __FILE__, \
-                                                                   __LINE__))
-#define NLOG() logger::InternalLog<std::cerr>(logger::log_level::notice, \
-                                              logger::log_location(__func__, \
-                                                                   __FILE__, \
-                                                                   __LINE__))
-#define ILOG() logger::InternalLog<std::cerr>(logger::log_level::info, \
-                                              logger::log_location(__func__, \
-                                                                   __FILE__, \
-                                                                   __LINE__))
-#define DLOG() logger::InternalLog<std::cerr>(logger::log_level::debug, \
-                                              logger::log_location(__func__, \
-                                                                   __FILE__, \
-                                                                   __LINE__))
-#define TLOG() logger::InternalLog<std::cerr>(logger::log_level::trace, \
-                                              logger::log_location(__func__, \
-                                                                   __FILE__, \
-                                                                   __LINE__))
+#define FLOG() logger::InternalLog(logger::log_level::fatal, \
+                                   logger::log_location(__func__, \
+                                                        __FILE__, \
+                                                        __LINE__), \
+                                   std::cerr)
+#define ALOG() logger::InternalLog(logger::log_level::alert, \
+                                   logger::log_location(__func__, \
+                                                        __FILE__, \
+                                                        __LINE__), \
+                                   std::cerr)
+#define CLOG() logger::InternalLog(logger::log_level::crit, \
+                                   logger::log_location(__func__, \
+                                                        __FILE__, \
+                                                        __LINE__), \
+                                   std::cerr)
+#define ELOG() logger::InternalLog(logger::log_level::error, \
+                                   logger::log_location(__func__, \
+                                                        __FILE__, \
+                                                        __LINE__), \
+                                   std::cerr)
+#define WLOG() logger::InternalLog(logger::log_level::warn, \
+                                   logger::log_location(__func__, \
+                                                        __FILE__, \
+                                                        __LINE__), \
+                                   std::cerr)
+#define NLOG() logger::InternalLog(logger::log_level::notice, \
+                                   logger::log_location(__func__, \
+                                                        __FILE__, \
+                                                        __LINE__), \
+                                   std::cerr)
+#define ILOG() logger::InternalLog(logger::log_level::info, \
+                                   logger::log_location(__func__, \
+                                                        __FILE__, \
+                                                        __LINE__), \
+                                   std::cerr)
+#define DLOG() logger::InternalLog(logger::log_level::debug, \
+                                   logger::log_location(__func__, \
+                                                        __FILE__, \
+                                                        __LINE__), \
+                                   std::cerr)
+#define TLOG() logger::InternalLog(logger::log_level::trace, \
+                                   logger::log_location(__func__, \
+                                                        __FILE__, \
+                                                        __LINE__), \
+                                   std::cerr)
 
 #endif /* end of include guard: LOGGER_H_SOWJCIS8 */

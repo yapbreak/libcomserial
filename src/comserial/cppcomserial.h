@@ -11,10 +11,12 @@ namespace com {
 
         public:
             explicit serial(const std::string &device);
+            ~serial();
 
 
         private:
             void open_device(const char *device);
+            void close_device();
 
 
         private:

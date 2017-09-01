@@ -136,6 +136,7 @@ AC_CONFIG_FILES([Makefile
                  unittests/fixtures/Makefile
                  unittests/cinterface/Makefile
                  unittests/cppinterface/Makefile
+                 unittests/logger/Makefile
                 ])
 
 AM_SILENT_RULES([yes])
