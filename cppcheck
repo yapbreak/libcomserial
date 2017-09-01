@@ -10,24 +10,27 @@ if [ -n "$1" ]; then
     case "$1" in
         "xml")
             output=xml
+            shift
             ;;
         "plain")
             output=plain
+            shift
             ;;
-        *)
-            echo "Output can be plain or xml"
-            exit 127
     esac
 fi
 
-OUTPUT_FLAGS=
+declare -a OUTPUT_FLAGS
 if [ "$output" == "xml" ]; then
-    OUTPUT_FLAGS="--xml --xml-version=2"
+    OUTPUT_FLAGS=("--xml" "--xml-version=2")
 fi
 
-/usr/bin/cppcheck --enable=all --verbose --quiet \
+/usr/bin/cppcheck --enable=all --verbose \
                   --suppress=missingIncludeSystem \
                   -I./src \
-                  -I./src/serialcomm \
-                  ${OUTPUT_FLAGS} \
+                  -I./src/comserial \
+                  -I./unittests/fixtures \
+                  --inline-suppr \
+                  -DHAVE_SOCAT=1 \
+                  "${OUTPUT_FLAGS[@]}" \
+                  "$@" \
                   .

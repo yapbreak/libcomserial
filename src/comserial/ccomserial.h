@@ -5,11 +5,11 @@
 extern "C" {
 #endif
 
-struct serialcomm_s;
-typedef struct serialcomm_s *serialcomm_t;
+struct comserial_s;
+typedef struct comserial_s *comserial_t;
 
-serialcomm_t serialcomm_create_device(const char *device);
-void serialcomm_destroy_device(serialcomm_t *device);
+comserial_t comserial_create_device(const char *device);
+void comserial_destroy_device(comserial_t *device);
 
 #ifdef __cplusplus
 };

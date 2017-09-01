@@ -2,7 +2,7 @@ AC_PREREQ([2.69])
 AC_INIT()
 AM_INIT_AUTOMAKE([-Wall -Werror])
 AC_CONFIG_MACRO_DIR([m4])
-AC_CONFIG_SRCDIR([src/serialcomm.h])
+AC_CONFIG_SRCDIR([src/comserial/comserial.h])
 AC_CONFIG_HEADERS([src/config.h])
 AC_PREFIX_DEFAULT(/usr/local)
 
@@ -131,6 +131,7 @@ AM_CONDITIONAL(PERLGD, [perldoc -l GD])
 # Generate files
 AC_CONFIG_FILES([Makefile
                  src/Makefile
+                 src/comserial/Makefile
                  unittests/Makefile
                  unittests/fixtures/Makefile
                  unittests/cinterface/Makefile

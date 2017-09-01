@@ -18,4 +18,4 @@ ut_cinterface_xtest_CFLAGS = $(TESTCFLAGS)
 ut_cinterface_xtest_CXXFLAGS = $(TESTCXXFLAGS)
 ut_cinterface_xtest_LDFLAGS = $(TESTLDFLAGS)
 ut_cinterface_xtest_LDADD  = $(top_builddir)/unittests/fixtures/libfixtures.la
-ut_cinterface_xtest_LDADD += $(top_builddir)/src/libserialcomm.la
+ut_cinterface_xtest_LDADD += $(top_builddir)/src/libcomserial.la

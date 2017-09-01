@@ -1,4 +1,5 @@
 #include "ut_cppmodule.h"
+#include "ut_exceptions.h"
 
 #include <CppUTest/CommandLineTestRunner.h>
 

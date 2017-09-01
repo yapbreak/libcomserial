@@ -1,7 +1,7 @@
 #ifndef CPPSERIALCOMM_H_JSJEFHWR
 #define CPPSERIALCOMM_H_JSJEFHWR
 
-#include <serialcomm/exceptions.h>
+#include <comserial/exceptions.h>
 
 #include <string>
 
@@ -10,7 +10,7 @@ namespace com {
     class serial {
 
         public:
-            serial(const std::string &device);
+            explicit serial(const std::string &device);
 
     };
 

@@ -11,4 +11,4 @@ libfixtures_la_SOURCES += fakeserial.cpp
 libfixtures_la_CFLAGS = $(TESTCFLAGS)
 libfixtures_la_CXXFLAGS = $(TESTCXXFLAGS)
 libfixtures_la_LDFLAGS = $(TESTLDFLAGS)
-libfixtures_la_LIBADD = $(top_builddir)/src/libserialcomm.la
+libfixtures_la_LIBADD = $(top_builddir)/src/libcomserial.la

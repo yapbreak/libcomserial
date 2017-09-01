@@ -1,9 +1,10 @@
 #ifndef UT_CMODULE_H_UJEVLXFG
 #define UT_CMODULE_H_UJEVLXFG
 
-#include <serialcomm/cserialcomm.h>
+#include <comserial/ccomserial.h>
 
 #include <CppUTest/TestHarness.h>
+#include <string>
 
 TEST_GROUP(cinterface_module)
 {
@@ -25,15 +26,15 @@ TEST_GROUP(cinterface_module)
 
 TEST(cinterface_module, open_non_existing)
 {
-    serialcomm_t s;
+    comserial_t s;
 
-    s = serialcomm_create_device("unavailable");
+    s = comserial_create_device("unavailable");
     POINTERS_EQUAL(NULL, s);
 }
 
 TEST(cinterface_module, close_non_existing)
 {
-    serialcomm_destroy_device(NULL);
+    comserial_destroy_device(NULL);
 }
 
 #endif /* end of include guard: UT_CMODULE_H_UJEVLXFG */

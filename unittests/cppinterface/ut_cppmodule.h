@@ -1,7 +1,7 @@
 #ifndef UT_CPPMODULE_H_OWBGUT0J
 #define UT_CPPMODULE_H_OWBGUT0J
 
-#include <serialcomm/cppserialcomm.h>
+#include <comserial/cppcomserial.h>
 
 #include <CppUTest/TestHarness.h>
 #include <string>

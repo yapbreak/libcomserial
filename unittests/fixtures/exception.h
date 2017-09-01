@@ -6,8 +6,7 @@
 template<class C>
 static inline void check_exception(const char *what)
 {
-    C *pe = NULL;
-    pe = new C();
+    C *pe = new C();
     STRCMP_EQUAL(what, pe->what());
     delete pe;
 };

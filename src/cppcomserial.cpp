@@ -1,4 +1,4 @@
-#include "serialcomm/cppserialcomm.h"
+#include "comserial/cppcomserial.h"
 
 using namespace com;
 
