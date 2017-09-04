@@ -24,7 +24,7 @@ if [ "$output" == "xml" ]; then
     OUTPUT_FLAGS=("--xml" "--xml-version=2")
 fi
 
-/usr/bin/cppcheck --enable=all --verbose \
+/usr/bin/cppcheck --enable=all --verbose --quiet \
                   --suppress=missingIncludeSystem \
                   -I./src \
                   -I./src/comserial \

@@ -21,10 +21,10 @@ namespace com
         class invalid_speed : public std::exception
         {
             public:
-                invalid_speed(unsigned int speed) {
+                explicit invalid_speed(unsigned int speed) : m_what() {
                     std::stringstream ss;
                     ss << "Invalid speed (" << speed << ")";
-                    m_what = ss.str();
+                    m_what.assign(ss.str());
                 }
 
                 virtual const char *what() const throw() {
