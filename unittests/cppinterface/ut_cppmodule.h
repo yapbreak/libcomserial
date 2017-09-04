@@ -46,5 +46,76 @@ SOCAT_TEST(cppinterface_module, open_existing)
     }
 };
 
+SOCAT_TEST(cppinterface_module, check_default_speed)
+{
+    com::serial serial("com_in");
+
+    UNSIGNED_LONGS_EQUAL(19200, serial.get_speed());
+}
+
+SOCAT_TEST(cppinterface_module, check_user_defined_valid_speed)
+{
+    com::serial serial("com_in", 9600);
+
+    UNSIGNED_LONGS_EQUAL(9600, serial.get_speed());
+}
+
+SOCAT_TEST(cppinterface_module, set_valid_speed_after)
+{
+    com::serial serial("com_in");
+
+    unsigned int old_speed = serial.set_speed(115200);
+    UNSIGNED_LONGS_EQUAL(19200, old_speed);
+    UNSIGNED_LONGS_EQUAL(115200, serial.get_speed());
+}
+
+SOCAT_TEST(cppinterface_module, create_invalid_speed)
+{
+    com::serial *serial = NULL;
+
+    CHECK_THROWS(com::exception::invalid_speed,
+                 serial = new com::serial("com_in", 1234));
+
+    delete serial;
+}
+
+SOCAT_TEST(cppinterface_module, set_invalid_speed)
+{
+    com::serial serial("com_in");
+
+    CHECK_THROWS(com::exception::invalid_speed,
+                 serial.set_speed(4321));
+}
+
+SOCAT_TEST(cppinterface_module, set_all_valid_speed)
+{
+    com::serial serial("com_in");
+
+    unsigned int valid_speed[] = {
+        19200,
+        50,
+        75,
+        110,
+        134,
+        150,
+        200,
+        300,
+        600,
+        1200,
+        1800,
+        2400,
+        4800,
+        9600,
+        19200,
+        38400,
+        57600,
+        115200,
+        230400
+    };
+
+    for (size_t i = 1; i < DIM_OF(valid_speed); i++)
+        UNSIGNED_LONGS_EQUAL(valid_speed[i - 1],
+                             serial.set_speed(valid_speed[i]));
+}
 
 #endif /* end of include guard: UT_CPPMODULE_H_OWBGUT0J */

@@ -2,6 +2,7 @@
 #define EXCEPTIONS_H_OZFRKXV6
 
 #include <exception>
+#include <sstream>
 
 namespace com
 {
@@ -12,10 +13,26 @@ namespace com
         class device_not_found : public std::exception
         {
             public:
-                virtual const char *what() const throw()
-                {
+                virtual const char *what() const throw() {
                     return "Device not found";
                 };
+        };
+
+        class invalid_speed : public std::exception
+        {
+            public:
+                invalid_speed(unsigned int speed) {
+                    std::stringstream ss;
+                    ss << "Invalid speed (" << speed << ")";
+                    m_what = ss.str();
+                }
+
+                virtual const char *what() const throw() {
+                    return m_what.c_str();
+                }
+
+            private:
+                std::string m_what;
         };
 
     };
