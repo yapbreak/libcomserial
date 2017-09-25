@@ -33,3 +33,29 @@ void comserial_destroy_device(comserial_t *device)
         (*device) = NULL;
     }
 }
+
+unsigned int comserial_get_speed(const comserial_t device)
+{
+    unsigned int speed = 0;
+
+    if (device != NULL) {
+        speed = device->dev->get_speed();
+    }
+
+    return speed;
+}
+
+unsigned int comserial_set_speed(comserial_t device, unsigned int speed)
+{
+    unsigned int old_speed = 0;
+
+    if (device != NULL) {
+        try {
+            old_speed = device->dev->set_speed(speed);
+        } catch (com::exception::invalid_speed) {
+            old_speed = 0;
+        }
+    }
+
+    return old_speed;
+}

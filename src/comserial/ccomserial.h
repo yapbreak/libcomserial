@@ -11,6 +11,9 @@ typedef struct comserial_s *comserial_t;
 comserial_t comserial_create_device(const char *device);
 void comserial_destroy_device(comserial_t *device);
 
+unsigned int comserial_get_speed(const comserial_t device);
+unsigned int comserial_set_speed(comserial_t device, unsigned int speed);
+
 #ifdef __cplusplus
 };
 #endif
