@@ -37,4 +37,15 @@ TEST(cinterface_module, close_non_existing)
     comserial_destroy_device(NULL);
 }
 
+SOCAT_TEST(cinterface_module, open_existing)
+{
+    comserial_t s;
+
+    s = comserial_create_device("com_in");
+    CHECK(NULL != s);
+
+    comserial_destroy_device(&s);
+    POINTERS_EQUAL(NULL, s);
+}
+
 #endif /* end of include guard: UT_CMODULE_H_UJEVLXFG */
