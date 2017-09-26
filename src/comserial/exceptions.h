@@ -43,6 +43,23 @@ namespace com
                 };
         };
 
+        class invalid_data_size : public std::exception
+        {
+            public:
+                explicit invalid_data_size(unsigned int data_size) : m_what() {
+                    std::stringstream ss;
+                    ss << "Invalid data size (" << data_size << ")";
+                    m_what.assign(ss.str());
+                }
+
+                virtual const char *what() const throw() {
+                    return m_what.c_str();
+                }
+
+            private:
+                std::string m_what;
+        };
+
     };
 
 };

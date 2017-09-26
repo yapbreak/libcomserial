@@ -32,4 +32,17 @@ TEST(cppinterface_exception, invalid_configuration)
                                                 "Invalid configuration set");
 }
 
+TEST(cppinterface_exception, invalid_data_size)
+{
+    com::exception::invalid_data_size *pe =
+                                    new com::exception::invalid_data_size(42);
+    STRCMP_EQUAL("Invalid data size (42)", pe->what());
+    delete pe;
+
+    pe = new com::exception::invalid_data_size(1234);
+    STRCMP_EQUAL("Invalid data size (1234)", pe->what());
+    delete pe;
+};
+
+
 #endif /* end of include guard: UT_EXCEPTIONS_H_BZJ0KWTM */

@@ -8,11 +8,14 @@
 
 using namespace com;
 
-serial::serial(const std::string &device, unsigned int speed)
+serial::serial(const std::string &device, unsigned int speed,
+                                          unsigned int data_size)
     : m_fd(-1)
     , m_speed(speed)
+    , m_datasize(data_size)
 {
     check_and_set_speed(speed);
+    check_and_set_data_size(data_size);
 
     open_device(device.c_str());
 
@@ -39,6 +42,23 @@ unsigned int serial::set_speed(unsigned int speed)
     commit_termios_configuration();
 
     return old_speed;
+}
+
+unsigned int serial::get_data_size() const
+{
+    return m_datasize;
+}
+
+unsigned int serial::set_data_size(unsigned int data_size)
+{
+    check_and_set_data_size(data_size);
+
+    unsigned int old_datasize = m_datasize;
+    m_datasize = data_size;
+
+    commit_termios_configuration();
+
+    return old_datasize;
 }
 
 void serial::open_device(const char *device)
@@ -85,9 +105,28 @@ void serial::check_and_set_speed(unsigned int new_speed)
         default:
             throw com::exception::invalid_speed(new_speed);
     }
+#undef VALID
 
     cfsetispeed(&m_options, m_termios_speed);
     cfsetospeed(&m_options, m_termios_speed);
+}
+
+void serial::check_and_set_data_size(unsigned int new_datasize)
+{
+#define VALID(value) case value: \
+    m_options.c_cflag &= ~CSIZE; \
+    m_options.c_cflag |= CS ## value; \
+    break;
+    switch (new_datasize)
+    {
+        VALID(5)
+        VALID(6)
+        VALID(7)
+        VALID(8)
+        default:
+            throw com::exception::invalid_data_size(new_datasize);
+    }
+#undef VALID
 }
 
 void serial::commit_termios_configuration()

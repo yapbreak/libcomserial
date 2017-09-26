@@ -118,4 +118,58 @@ SOCAT_TEST(cppinterface_module, set_all_valid_speed)
                              serial.set_speed(valid_speed[i]));
 }
 
+SOCAT_TEST(cppinterface_module, check_default_data_size)
+{
+    com::serial serial("com_in");
+
+    UNSIGNED_LONGS_EQUAL(8, serial.get_data_size());
+}
+
+SOCAT_TEST(cppinterface_module, check_user_defined_valid_data_size)
+{
+    com::serial serial("com_in", 19200, 7);
+
+    UNSIGNED_LONGS_EQUAL(7, serial.get_data_size());
+}
+
+SOCAT_TEST(cppinterface_module, set_valid_data_size_after)
+{
+    com::serial serial("com_in");
+
+    unsigned int old_data_size = serial.set_data_size(7);
+    UNSIGNED_LONGS_EQUAL(8, old_data_size);
+    UNSIGNED_LONGS_EQUAL(7, serial.get_data_size());
+}
+
+SOCAT_TEST(cppinterface_module, create_invalid_data_size)
+{
+    com::serial *serial = NULL;
+
+    CHECK_THROWS(com::exception::invalid_data_size,
+                 serial = new com::serial("com_in", 19200, 1234));
+
+    delete serial;
+}
+
+SOCAT_TEST(cppinterface_module, set_invalid_data_size)
+{
+    com::serial serial("com_in");
+
+    CHECK_THROWS(com::exception::invalid_data_size,
+                 serial.set_data_size(4321));
+}
+
+SOCAT_TEST(cppinterface_module, set_all_valid_data_size)
+{
+    com::serial serial("com_in");
+
+    unsigned int valid_data_size[] = {
+        8, 5, 6, 7, 8
+    };
+
+    for (size_t i = 1; i < DIM_OF(valid_data_size); i++)
+        UNSIGNED_LONGS_EQUAL(valid_data_size[i - 1],
+                             serial.set_data_size(valid_data_size[i]));
+}
+
 #endif /* end of include guard: UT_CPPMODULE_H_OWBGUT0J */
