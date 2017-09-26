@@ -83,3 +83,27 @@ unsigned int comserial_set_data_size(comserial_t device, unsigned int data_size)
 
     return old_data_size;
 }
+
+unsigned int comserial_get_stop_size(const comserial_t device)
+{
+    unsigned int stop_size = 0;
+
+    if (device != NULL)
+        stop_size = device->dev->get_stop_size();
+
+    return stop_size;
+}
+
+unsigned int comserial_set_stop_size(comserial_t device, unsigned int stop_size)
+{
+    unsigned int old_stop_size = 0;
+    if (device != NULL) {
+        try {
+            old_stop_size = device->dev->set_stop_size(stop_size);
+        } catch (com::exception::invalid_stop_size) {
+            old_stop_size = 0;
+        }
+    }
+
+    return old_stop_size;
+}

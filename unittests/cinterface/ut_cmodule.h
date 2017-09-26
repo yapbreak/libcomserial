@@ -68,6 +68,16 @@ TEST(cinterface_module, set_data_size_invalid_device)
     UNSIGNED_LONGS_EQUAL(0, comserial_set_data_size(NULL, 8));
 }
 
+TEST(cinterface_module, get_stop_size_invalid_device)
+{
+    UNSIGNED_LONGS_EQUAL(0, comserial_get_stop_size(NULL));
+}
+
+TEST(cinterface_module, set_stop_size_invalid_device)
+{
+    UNSIGNED_LONGS_EQUAL(0, comserial_set_stop_size(NULL, 2));
+}
+
 
 TEST_GROUP(cinterface_valid_module)
 {
@@ -121,6 +131,23 @@ SOCAT_TEST(cinterface_valid_module, set_valid_data_size)
 SOCAT_TEST(cinterface_valid_module, set_invalid_data_size)
 {
     UNSIGNED_LONGS_EQUAL(0, comserial_set_data_size(m_comserial, 1234));
+}
+
+SOCAT_TEST(cinterface_valid_module, check_default_stop_size)
+{
+    UNSIGNED_LONGS_EQUAL(1, comserial_get_stop_size(m_comserial));
+}
+
+SOCAT_TEST(cinterface_valid_module, set_valid_stop_size)
+{
+    unsigned int old_stop_size = comserial_set_stop_size(m_comserial, 2);
+    UNSIGNED_LONGS_EQUAL(1, old_stop_size);
+    UNSIGNED_LONGS_EQUAL(2, comserial_get_stop_size(m_comserial));
+}
+
+SOCAT_TEST(cinterface_valid_module, set_invalid_stop_size)
+{
+    UNSIGNED_LONGS_EQUAL(0, comserial_set_stop_size(m_comserial, 1234));
 }
 
 #endif /* end of include guard: UT_CMODULE_H_UJEVLXFG */

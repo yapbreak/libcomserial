@@ -17,6 +17,9 @@ unsigned int comserial_set_speed(comserial_t device, unsigned int speed);
 unsigned int comserial_get_data_size(const comserial_t device);
 unsigned int comserial_set_data_size(comserial_t device, unsigned int data_size);
 
+unsigned int comserial_get_stop_size(const comserial_t device);
+unsigned int comserial_set_stop_size(comserial_t device, unsigned int stop_size);
+
 #ifdef __cplusplus
 };
 #endif
