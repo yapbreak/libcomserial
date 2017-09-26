@@ -172,4 +172,58 @@ SOCAT_TEST(cppinterface_module, set_all_valid_data_size)
                              serial.set_data_size(valid_data_size[i]));
 }
 
+SOCAT_TEST(cppinterface_module, check_default_stop_size)
+{
+    com::serial serial("com_in");
+
+    UNSIGNED_LONGS_EQUAL(1, serial.get_stop_size());
+}
+
+SOCAT_TEST(cppinterface_module, check_user_defined_valid_stop_size)
+{
+    com::serial serial("com_in", 19200, 8, 2);
+
+    UNSIGNED_LONGS_EQUAL(2, serial.get_stop_size());
+}
+
+SOCAT_TEST(cppinterface_module, set_valid_stop_size_after)
+{
+    com::serial serial("com_in");
+
+    unsigned int old_stop_size = serial.set_stop_size(2);
+    UNSIGNED_LONGS_EQUAL(1, old_stop_size);
+    UNSIGNED_LONGS_EQUAL(2, serial.get_stop_size());
+}
+
+SOCAT_TEST(cppinterface_module, create_invalid_stop_size)
+{
+    com::serial *serial = NULL;
+
+    CHECK_THROWS(com::exception::invalid_stop_size,
+                 serial = new com::serial("com_in", 19200, 8, 4));
+
+    delete serial;
+}
+
+SOCAT_TEST(cppinterface_module, set_invalid_stop_size)
+{
+    com::serial serial("com_in");
+
+    CHECK_THROWS(com::exception::invalid_stop_size,
+                 serial.set_stop_size(4321));
+}
+
+SOCAT_TEST(cppinterface_module, set_all_valid_stop_size)
+{
+    com::serial serial("com_in");
+
+    unsigned int valid_stop_size[] = {
+        1, 1, 2
+    };
+
+    for (size_t i = 1; i < DIM_OF(valid_stop_size); i++)
+        UNSIGNED_LONGS_EQUAL(valid_stop_size[i - 1],
+                             serial.set_stop_size(valid_stop_size[i]));
+}
+
 #endif /* end of include guard: UT_CPPMODULE_H_OWBGUT0J */

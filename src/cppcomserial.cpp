@@ -9,14 +9,17 @@
 using namespace com;
 
 serial::serial(const std::string &device, unsigned int speed,
-                                          unsigned int data_size)
+                                          unsigned int data_size,
+                                          unsigned int stop_size)
     : m_fd(-1)
     , m_speed(speed)
     , m_datasize(data_size)
+    , m_stopsize(stop_size)
     , m_options()
 {
     check_and_set_speed(speed);
     check_and_set_data_size(data_size);
+    check_and_set_stop_size(stop_size);
 
     open_device(device.c_str());
 
@@ -60,6 +63,23 @@ unsigned int serial::set_data_size(unsigned int data_size)
     commit_termios_configuration();
 
     return old_datasize;
+}
+
+unsigned int serial::get_stop_size() const
+{
+    return m_stopsize;
+}
+
+unsigned int serial::set_stop_size(unsigned int stop_size)
+{
+    check_and_set_stop_size(stop_size);
+
+    unsigned int old_stopsize = m_stopsize;
+    m_stopsize = stop_size;
+
+    commit_termios_configuration();
+
+    return old_stopsize;
 }
 
 void serial::open_device(const char *device)
@@ -128,6 +148,21 @@ void serial::check_and_set_data_size(unsigned int new_datasize)
             throw com::exception::invalid_data_size(new_datasize);
     }
 #undef VALID
+}
+
+void serial::check_and_set_stop_size(unsigned int new_stopsize)
+{
+    switch (new_stopsize)
+    {
+        case 1:
+            m_options.c_cflag &= ~CSTOPB;
+            break;
+        case 2:
+            m_options.c_cflag |= CSTOPB;
+            break;
+        default:
+            throw com::exception::invalid_stop_size(new_stopsize);
+    }
 }
 
 void serial::commit_termios_configuration()
