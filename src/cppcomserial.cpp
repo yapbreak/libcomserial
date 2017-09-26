@@ -19,6 +19,17 @@ serial::serial(const std::string &device, unsigned int speed,
     , m_parity(parity)
     , m_options()
 {
+    // Set default termios configuration
+    cfmakeraw(&m_options);
+    m_options.c_cflag &= ~CRTSCTS;
+    m_options.c_cflag |= (CLOCAL | CREAD);
+    m_options.c_lflag &= ~(ICANON | ECHO | ECHONL | ISIG | IEXTEN);
+    m_options.c_iflag &= ~(IGNBRK | BRKINT | ICRNL | INLCR | PARMRK | INPCK
+                         | ISTRIP | IXON);
+    m_options.c_oflag = 0;
+    m_options.c_cc[VMIN] = 1;
+    m_options.c_cc[VTIME] = 0;
+
     check_and_set_speed(speed);
     check_and_set_data_size(data_size);
     check_and_set_stop_size(stop_size);
@@ -108,6 +119,11 @@ void serial::open_device(const char *device)
     if (m_fd < 0) {
         m_fd = -1;
         throw com::exception::device_not_found();
+    }
+
+    if (!isatty(m_fd)) {
+        close_device();
+        throw com::exception::invalid_device(device);
     }
 }
 

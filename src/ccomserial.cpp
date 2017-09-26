@@ -19,6 +19,9 @@ comserial_t comserial_create_device(const char *device)
         } catch (com::exception::device_not_found) {
             delete serial;
             serial = NULL;
+        } catch (com::exception::invalid_device) {
+            delete serial;
+            serial = NULL;
         }
     }
 

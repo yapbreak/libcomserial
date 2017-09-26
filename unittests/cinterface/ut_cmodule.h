@@ -32,6 +32,14 @@ TEST(cinterface_module, open_non_existing)
     POINTERS_EQUAL(NULL, s);
 }
 
+TEST(cinterface_module, open_existing_notty)
+{
+    comserial_t s;
+
+    s = comserial_create_device("/dev/null");
+    POINTERS_EQUAL(NULL, s);
+}
+
 TEST(cinterface_module, close_non_existing)
 {
     comserial_destroy_device(NULL);

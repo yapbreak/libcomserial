@@ -94,6 +94,23 @@ namespace com
                 std::string m_what;
         };
 
+        class invalid_device : public std::exception
+        {
+            public:
+                explicit invalid_device(const char *device) : m_what() {
+                    std::stringstream ss;
+                    ss << "Invalid device (" << device << ")";
+                    m_what.assign(ss.str());
+                }
+
+                virtual const char *what() const throw() {
+                    return m_what.c_str();
+                }
+
+            private:
+                std::string m_what;
+        };
+
     };
 
 };

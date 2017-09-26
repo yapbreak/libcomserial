@@ -68,4 +68,16 @@ TEST(cppinterface_exception, invalid_parity)
     delete pe;
 };
 
+TEST(cppinterface_exception, invalid_device)
+{
+    com::exception::invalid_device *pe =
+                            new com::exception::invalid_device("/dev/null");
+    STRCMP_EQUAL("Invalid device (/dev/null)", pe->what());
+    delete pe;
+
+    pe = new com::exception::invalid_device("/tmp/");
+    STRCMP_EQUAL("Invalid device (/tmp/)", pe->what());
+    delete pe;
+};
+
 #endif /* end of include guard: UT_EXCEPTIONS_H_BZJ0KWTM */

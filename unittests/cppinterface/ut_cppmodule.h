@@ -36,6 +36,16 @@ TEST(cppinterface_module, open_non_existing)
     delete serial;
 };
 
+TEST(cppinterface_module, open_existing_notty)
+{
+    com::serial *serial = NULL;
+
+    CHECK_THROWS(com::exception::invalid_device,
+                 serial = new com::serial("/dev/null"));
+
+    delete serial;
+};
+
 SOCAT_TEST(cppinterface_module, open_existing)
 {
     try {
@@ -279,4 +289,5 @@ SOCAT_TEST(cppinterface_module, set_all_valid_parity)
         UNSIGNED_LONGS_EQUAL(valid_parity[i - 1],
                              serial.set_parity(valid_parity[i]));
 }
+
 #endif /* end of include guard: UT_CPPMODULE_H_OWBGUT0J */
