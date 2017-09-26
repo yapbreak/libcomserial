@@ -58,6 +58,17 @@ TEST(cinterface_module, set_speed_invalid_device)
     UNSIGNED_LONGS_EQUAL(0, comserial_set_speed(NULL, 115200));
 }
 
+TEST(cinterface_module, get_data_size_invalid_device)
+{
+    UNSIGNED_LONGS_EQUAL(0, comserial_get_data_size(NULL));
+}
+
+TEST(cinterface_module, set_data_size_invalid_device)
+{
+    UNSIGNED_LONGS_EQUAL(0, comserial_set_data_size(NULL, 8));
+}
+
+
 TEST_GROUP(cinterface_valid_module)
 {
     fake::serial *m_serial;
@@ -93,6 +104,23 @@ SOCAT_TEST(cinterface_valid_module, set_valid_speed)
 SOCAT_TEST(cinterface_valid_module, set_invalid_speed)
 {
     UNSIGNED_LONGS_EQUAL(0, comserial_set_speed(m_comserial, 1234));
+}
+
+SOCAT_TEST(cinterface_valid_module, check_default_data_size)
+{
+    UNSIGNED_LONGS_EQUAL(8, comserial_get_data_size(m_comserial));
+}
+
+SOCAT_TEST(cinterface_valid_module, set_valid_data_size)
+{
+    unsigned int old_data_size = comserial_set_data_size(m_comserial, 7);
+    UNSIGNED_LONGS_EQUAL(8, old_data_size);
+    UNSIGNED_LONGS_EQUAL(7, comserial_get_data_size(m_comserial));
+}
+
+SOCAT_TEST(cinterface_valid_module, set_invalid_data_size)
+{
+    UNSIGNED_LONGS_EQUAL(0, comserial_set_data_size(m_comserial, 1234));
 }
 
 #endif /* end of include guard: UT_CMODULE_H_UJEVLXFG */

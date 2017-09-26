@@ -14,6 +14,9 @@ void comserial_destroy_device(comserial_t *device);
 unsigned int comserial_get_speed(const comserial_t device);
 unsigned int comserial_set_speed(comserial_t device, unsigned int speed);
 
+unsigned int comserial_get_data_size(const comserial_t device);
+unsigned int comserial_set_data_size(comserial_t device, unsigned int data_size);
+
 #ifdef __cplusplus
 };
 #endif

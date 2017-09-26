@@ -13,6 +13,7 @@ serial::serial(const std::string &device, unsigned int speed,
     : m_fd(-1)
     , m_speed(speed)
     , m_datasize(data_size)
+    , m_options()
 {
     check_and_set_speed(speed);
     check_and_set_data_size(data_size);

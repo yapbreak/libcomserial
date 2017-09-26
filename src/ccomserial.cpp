@@ -59,3 +59,27 @@ unsigned int comserial_set_speed(comserial_t device, unsigned int speed)
 
     return old_speed;
 }
+
+unsigned int comserial_get_data_size(const comserial_t device)
+{
+    unsigned int data_size = 0;
+
+    if (device != NULL)
+        data_size = device->dev->get_data_size();
+
+    return data_size;
+}
+
+unsigned int comserial_set_data_size(comserial_t device, unsigned int data_size)
+{
+    unsigned int old_data_size = 0;
+    if (device != NULL) {
+        try {
+            old_data_size = device->dev->set_data_size(data_size);
+        } catch (com::exception::invalid_data_size) {
+            old_data_size = 0;
+        }
+    }
+
+    return old_data_size;
+}
