@@ -13,7 +13,7 @@ on GNU/Linux (or any POSIX system with termios interface).
 ## Download
 
 Source library are available on
-https://gitlab.yapbreak.fr/libraries/libcomserial/artifacts_XXX.tar.gz.
+https://gitlab.yapbreak.fr/libraries/libcomserial/-/jobs/artifacts/master/download?job=distribute
 
 One can also simply clone repository to get the latest modification.
 
