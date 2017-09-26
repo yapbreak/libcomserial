@@ -77,6 +77,23 @@ namespace com
                 std::string m_what;
         };
 
+        class invalid_parity : public std::exception
+        {
+            public:
+                explicit invalid_parity(char parity) : m_what() {
+                    std::stringstream ss;
+                    ss << "Invalid parity (" << parity << ")";
+                    m_what.assign(ss.str());
+                }
+
+                virtual const char *what() const throw() {
+                    return m_what.c_str();
+                }
+
+            private:
+                std::string m_what;
+        };
+
     };
 
 };

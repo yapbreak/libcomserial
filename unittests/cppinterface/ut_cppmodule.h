@@ -226,4 +226,57 @@ SOCAT_TEST(cppinterface_module, set_all_valid_stop_size)
                              serial.set_stop_size(valid_stop_size[i]));
 }
 
+SOCAT_TEST(cppinterface_module, check_default_parity)
+{
+    com::serial serial("com_in");
+
+    UNSIGNED_LONGS_EQUAL('n', serial.get_parity());
+}
+
+SOCAT_TEST(cppinterface_module, check_user_defined_valid_parity)
+{
+    com::serial serial("com_in", 19200, 8, 2, 'o');
+
+    UNSIGNED_LONGS_EQUAL('o', serial.get_parity());
+}
+
+SOCAT_TEST(cppinterface_module, set_valid_parity_after)
+{
+    com::serial serial("com_in");
+
+    char old_parity = serial.set_parity('O');
+    UNSIGNED_LONGS_EQUAL('n', old_parity);
+    UNSIGNED_LONGS_EQUAL('o', serial.get_parity());
+}
+
+SOCAT_TEST(cppinterface_module, create_invalid_parity)
+{
+    com::serial *serial = NULL;
+
+    CHECK_THROWS(com::exception::invalid_parity,
+                 serial = new com::serial("com_in", 19200, 8, 1, 'X'));
+
+    delete serial;
+}
+
+SOCAT_TEST(cppinterface_module, set_invalid_parity)
+{
+    com::serial serial("com_in");
+
+    CHECK_THROWS(com::exception::invalid_parity,
+                 serial.set_parity('X'));
+}
+
+SOCAT_TEST(cppinterface_module, set_all_valid_parity)
+{
+    com::serial serial("com_in");
+
+    char valid_parity[] = {
+        'n', 'o', 'e', 'n'
+    };
+
+    for (size_t i = 1; i < DIM_OF(valid_parity); i++)
+        UNSIGNED_LONGS_EQUAL(valid_parity[i - 1],
+                             serial.set_parity(valid_parity[i]));
+}
 #endif /* end of include guard: UT_CPPMODULE_H_OWBGUT0J */

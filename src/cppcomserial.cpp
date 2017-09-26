@@ -10,16 +10,19 @@ using namespace com;
 
 serial::serial(const std::string &device, unsigned int speed,
                                           unsigned int data_size,
-                                          unsigned int stop_size)
+                                          unsigned int stop_size,
+                                          char parity)
     : m_fd(-1)
     , m_speed(speed)
     , m_datasize(data_size)
     , m_stopsize(stop_size)
+    , m_parity(parity)
     , m_options()
 {
     check_and_set_speed(speed);
     check_and_set_data_size(data_size);
     check_and_set_stop_size(stop_size);
+    check_and_set_parity(parity);
 
     open_device(device.c_str());
 
@@ -80,6 +83,23 @@ unsigned int serial::set_stop_size(unsigned int stop_size)
     commit_termios_configuration();
 
     return old_stopsize;
+}
+
+char serial::get_parity() const
+{
+    return m_parity;
+}
+
+char serial::set_parity(char parity)
+{
+    check_and_set_parity(parity);
+
+    char old_parity = m_parity;
+    m_parity = (parity < 'a') ? (parity + ('a' - 'A')) : parity;
+
+    commit_termios_configuration();
+
+    return old_parity;
 }
 
 void serial::open_device(const char *device)
@@ -162,6 +182,29 @@ void serial::check_and_set_stop_size(unsigned int new_stopsize)
             break;
         default:
             throw com::exception::invalid_stop_size(new_stopsize);
+    }
+}
+
+void serial::check_and_set_parity(char new_parity)
+{
+    switch (new_parity)
+    {
+        case 'n':
+        case 'N':
+            m_options.c_cflag &= ~PARENB;
+            break;
+        case 'o':
+        case 'O':
+            m_options.c_cflag |= PARENB;
+            m_options.c_cflag |= PARODD;
+            break;
+        case 'e':
+        case 'E':
+            m_options.c_cflag |= PARENB;
+            m_options.c_cflag &= ~PARODD;
+            break;
+        default:
+            throw com::exception::invalid_parity(new_parity);
     }
 }
 

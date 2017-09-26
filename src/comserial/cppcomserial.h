@@ -13,7 +13,8 @@ namespace com {
         public:
             serial(const std::string &device, unsigned int speed = 19200,
                                               unsigned int data_size = 8,
-                                              unsigned int stop_size = 1);
+                                              unsigned int stop_size = 1,
+                                              char parity = 'n');
             ~serial();
 
             unsigned int get_speed() const;
@@ -25,6 +26,9 @@ namespace com {
             unsigned int get_stop_size() const;
             unsigned int set_stop_size(unsigned int stop_size);
 
+            char get_parity() const;
+            char set_parity(char parity);
+
         private:
             void open_device(const char *device);
             void close_device();
@@ -32,6 +36,7 @@ namespace com {
             void check_and_set_speed(unsigned int new_speed);
             void check_and_set_data_size(unsigned int new_datasize);
             void check_and_set_stop_size(unsigned int new_stopsize);
+            void check_and_set_parity(char new_parity);
 
             void commit_termios_configuration();
 
@@ -41,6 +46,7 @@ namespace com {
             unsigned int m_speed;
             unsigned int m_datasize;
             unsigned int m_stopsize;
+            char m_parity;
 
             speed_t m_termios_speed;
 

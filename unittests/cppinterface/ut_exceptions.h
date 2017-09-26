@@ -56,5 +56,16 @@ TEST(cppinterface_exception, invalid_stop_size)
     delete pe;
 };
 
+TEST(cppinterface_exception, invalid_parity)
+{
+    com::exception::invalid_parity *pe =
+                                    new com::exception::invalid_parity('X');
+    STRCMP_EQUAL("Invalid parity (X)", pe->what());
+    delete pe;
+
+    pe = new com::exception::invalid_parity('Y');
+    STRCMP_EQUAL("Invalid parity (Y)", pe->what());
+    delete pe;
+};
 
 #endif /* end of include guard: UT_EXCEPTIONS_H_BZJ0KWTM */
