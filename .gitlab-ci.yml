@@ -14,9 +14,10 @@ check:
     stage: test
     script:
         - ./autogen.sh
-        - ./configure
+        - ./configure --enable-coverage
         - make
         - make check
+        - make coverage | tail -10
     dependencies:
         - build
 

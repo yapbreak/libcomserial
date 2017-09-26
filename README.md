@@ -6,6 +6,7 @@ on GNU/Linux (or any POSIX system with termios interface).
 ---
 
 [![build_status](https://gitlab.yapbreak.fr/libraries/libcomserial/badges/master/build.svg)](https://gitlab.yapbreak.fr/libraries/libcomserial/commits/master)
+[![coverage report](https://gitlab.yapbreak.fr/libraries/libcomserial/badges/master/coverage.svg)](https://gitlab.yapbreak.fr/libraries/libcomserial/commits/master)
 
 ---
 
