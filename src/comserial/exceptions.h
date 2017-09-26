@@ -35,6 +35,14 @@ namespace com
                 std::string m_what;
         };
 
+        class invalid_configuration : public std::exception
+        {
+            public:
+                virtual const char *what() const throw() {
+                    return "Invalid configuration set";
+                };
+        };
+
     };
 
 };

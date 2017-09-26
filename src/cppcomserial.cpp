@@ -15,6 +15,8 @@ serial::serial(const std::string &device, unsigned int speed)
     check_and_set_speed(speed);
 
     open_device(device.c_str());
+
+    commit_termios_configuration();
 }
 
 serial::~serial()
@@ -33,6 +35,9 @@ unsigned int serial::set_speed(unsigned int speed)
 
     unsigned int old_speed = m_speed;
     m_speed = speed;
+
+    commit_termios_configuration();
+
     return old_speed;
 }
 
@@ -80,4 +85,15 @@ void serial::check_and_set_speed(unsigned int new_speed)
         default:
             throw com::exception::invalid_speed(new_speed);
     }
+
+    cfsetispeed(&m_options, m_termios_speed);
+    cfsetospeed(&m_options, m_termios_speed);
+}
+
+void serial::commit_termios_configuration()
+{
+    if (tcsetattr(m_fd, TCSAFLUSH, &m_options) < 0)
+        // Fail to apply configuration
+        // This shall never happen due to all checks before
+        throw exception::invalid_configuration();
 }

@@ -23,12 +23,16 @@ namespace com {
 
             void check_and_set_speed(unsigned int new_speed);
 
+            void commit_termios_configuration();
+
 
         private:
             int m_fd;
             unsigned int m_speed;
 
             speed_t m_termios_speed;
+
+            struct termios m_options;
     };
 
 };

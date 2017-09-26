@@ -26,5 +26,10 @@ TEST(cppinterface_exception, invalid_speed)
     delete pe;
 };
 
+TEST(cppinterface_exception, invalid_configuration)
+{
+    check_exception<com::exception::invalid_configuration>(
+                                                "Invalid configuration set");
+}
 
 #endif /* end of include guard: UT_EXCEPTIONS_H_BZJ0KWTM */
