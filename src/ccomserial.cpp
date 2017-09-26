@@ -107,3 +107,27 @@ unsigned int comserial_set_stop_size(comserial_t device, unsigned int stop_size)
 
     return old_stop_size;
 }
+
+char comserial_get_parity(const comserial_t device)
+{
+    char parity = 0;
+
+    if (device != NULL)
+        parity = device->dev->get_parity();
+
+    return parity;
+}
+
+char comserial_set_parity(comserial_t device, char parity)
+{
+    unsigned int old_parity = 0;
+    if (device != NULL) {
+        try {
+            old_parity = device->dev->set_parity(parity);
+        } catch (com::exception::invalid_parity) {
+            old_parity = 0;
+        }
+    }
+
+    return old_parity;
+}

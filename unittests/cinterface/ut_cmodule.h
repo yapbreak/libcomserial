@@ -78,6 +78,15 @@ TEST(cinterface_module, set_stop_size_invalid_device)
     UNSIGNED_LONGS_EQUAL(0, comserial_set_stop_size(NULL, 2));
 }
 
+TEST(cinterface_module, get_parity_invalid_device)
+{
+    UNSIGNED_LONGS_EQUAL(0, comserial_get_parity(NULL));
+}
+
+TEST(cinterface_module, set_parity_invalid_device)
+{
+    UNSIGNED_LONGS_EQUAL(0, comserial_set_parity(NULL, 'o'));
+}
 
 TEST_GROUP(cinterface_valid_module)
 {
@@ -148,6 +157,23 @@ SOCAT_TEST(cinterface_valid_module, set_valid_stop_size)
 SOCAT_TEST(cinterface_valid_module, set_invalid_stop_size)
 {
     UNSIGNED_LONGS_EQUAL(0, comserial_set_stop_size(m_comserial, 1234));
+}
+
+SOCAT_TEST(cinterface_valid_module, check_default_parity)
+{
+    UNSIGNED_LONGS_EQUAL('n', comserial_get_parity(m_comserial));
+}
+
+SOCAT_TEST(cinterface_valid_module, set_valid_parity)
+{
+    char old_parity = comserial_set_parity(m_comserial, 'E');
+    UNSIGNED_LONGS_EQUAL('n', old_parity);
+    UNSIGNED_LONGS_EQUAL('e', comserial_get_parity(m_comserial));
+}
+
+SOCAT_TEST(cinterface_valid_module, set_invalid_parity)
+{
+    UNSIGNED_LONGS_EQUAL(0, comserial_set_parity(m_comserial, 'P'));
 }
 
 #endif /* end of include guard: UT_CMODULE_H_UJEVLXFG */

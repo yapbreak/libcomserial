@@ -20,6 +20,9 @@ unsigned int comserial_set_data_size(comserial_t device, unsigned int data_size)
 unsigned int comserial_get_stop_size(const comserial_t device);
 unsigned int comserial_set_stop_size(comserial_t device, unsigned int stop_size);
 
+char comserial_get_parity(const comserial_t device);
+char comserial_set_parity(comserial_t device, char parity);
+
 #ifdef __cplusplus
 };
 #endif
