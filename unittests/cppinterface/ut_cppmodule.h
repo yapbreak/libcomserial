@@ -290,4 +290,36 @@ SOCAT_TEST(cppinterface_module, set_all_valid_parity)
                              serial.set_parity(valid_parity[i]));
 }
 
+SOCAT_TEST(cppinterface_module, check_default_read_timeout)
+{
+    com::serial serial("com_in");
+
+    UNSIGNED_LONGS_EQUAL(1000, serial.get_read_timeout());
+}
+
+SOCAT_TEST(cppinterface_module, check_default_write_timeout)
+{
+    com::serial serial("com_in");
+
+    UNSIGNED_LONGS_EQUAL(1000, serial.get_write_timeout());
+}
+
+SOCAT_TEST(cppinterface_module, set_read_timeout)
+{
+    com::serial serial("com_in");
+    unsigned int old_timeout = serial.set_read_timeout(10);
+
+    UNSIGNED_LONGS_EQUAL(1000, old_timeout);
+    UNSIGNED_LONGS_EQUAL(10, serial.get_read_timeout());
+}
+
+SOCAT_TEST(cppinterface_module, set_write_timeout)
+{
+    com::serial serial("com_in");
+    unsigned int old_timeout = serial.set_write_timeout(10);
+
+    UNSIGNED_LONGS_EQUAL(1000, old_timeout);
+    UNSIGNED_LONGS_EQUAL(10, serial.get_write_timeout());
+}
+
 #endif /* end of include guard: UT_CPPMODULE_H_OWBGUT0J */

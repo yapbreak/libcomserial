@@ -17,6 +17,8 @@ serial::serial(const std::string &device, unsigned int speed,
     , m_datasize(data_size)
     , m_stopsize(stop_size)
     , m_parity(parity)
+    , m_read_timeout(1000)
+    , m_write_timeout(1000)
     , m_options()
 {
     // Set default termios configuration
@@ -111,6 +113,34 @@ char serial::set_parity(char parity)
     commit_termios_configuration();
 
     return old_parity;
+}
+
+unsigned int serial::get_read_timeout() const
+{
+    return m_read_timeout;
+}
+
+unsigned int serial::set_read_timeout(unsigned int timeout)
+{
+    unsigned int old_timeout = m_read_timeout;
+
+    m_read_timeout = timeout;
+
+    return old_timeout;
+}
+
+unsigned int serial::get_write_timeout() const
+{
+    return m_write_timeout;
+}
+
+unsigned int serial::set_write_timeout(unsigned int timeout)
+{
+    unsigned int old_timeout = m_write_timeout;
+
+    m_write_timeout = timeout;
+
+    return old_timeout;
 }
 
 void serial::open_device(const char *device)

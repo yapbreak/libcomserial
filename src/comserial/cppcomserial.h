@@ -29,6 +29,11 @@ namespace com {
             char get_parity() const;
             char set_parity(char parity);
 
+            unsigned int get_read_timeout() const;
+            unsigned int set_read_timeout(unsigned int timeout);
+            unsigned int get_write_timeout() const;
+            unsigned int set_write_timeout(unsigned int timeout);
+
         private:
             void open_device(const char *device);
             void close_device();
@@ -47,6 +52,9 @@ namespace com {
             unsigned int m_datasize;
             unsigned int m_stopsize;
             char m_parity;
+
+            unsigned int m_read_timeout;
+            unsigned int m_write_timeout;
 
             speed_t m_termios_speed;
 
