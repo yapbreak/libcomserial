@@ -23,6 +23,11 @@ unsigned int comserial_set_stop_size(comserial_t device, unsigned int stop_size)
 char comserial_get_parity(const comserial_t device);
 char comserial_set_parity(comserial_t device, char parity);
 
+unsigned long comserial_get_read_timeout(const comserial_t device);
+unsigned long comserial_set_read_timeout(comserial_t device, unsigned int parity);
+unsigned long comserial_get_write_timeout(const comserial_t device);
+unsigned long comserial_set_write_timeout(comserial_t device, unsigned int parity);
+
 #ifdef __cplusplus
 };
 #endif

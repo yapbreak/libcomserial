@@ -96,6 +96,26 @@ TEST(cinterface_module, set_parity_invalid_device)
     UNSIGNED_LONGS_EQUAL(0, comserial_set_parity(NULL, 'o'));
 }
 
+TEST(cinterface_module, get_read_timeout_invalid_device)
+{
+    UNSIGNED_LONGS_EQUAL(0, comserial_get_read_timeout(NULL));
+}
+
+TEST(cinterface_module, set_read_timeout_invalid_device)
+{
+    UNSIGNED_LONGS_EQUAL(0, comserial_set_read_timeout(NULL, 10));
+}
+
+TEST(cinterface_module, get_write_timeout_invalid_device)
+{
+    UNSIGNED_LONGS_EQUAL(0, comserial_get_write_timeout(NULL));
+}
+
+TEST(cinterface_module, set_write_timeout_invalid_device)
+{
+    UNSIGNED_LONGS_EQUAL(0, comserial_set_write_timeout(NULL, 10));
+}
+
 TEST_GROUP(cinterface_valid_module)
 {
     fake::serial *m_serial;
@@ -182,6 +202,30 @@ SOCAT_TEST(cinterface_valid_module, set_valid_parity)
 SOCAT_TEST(cinterface_valid_module, set_invalid_parity)
 {
     UNSIGNED_LONGS_EQUAL(0, comserial_set_parity(m_comserial, 'P'));
+}
+
+SOCAT_TEST(cinterface_valid_module, check_default_read_timeout)
+{
+    UNSIGNED_LONGS_EQUAL(1000, comserial_get_read_timeout(m_comserial));
+}
+
+SOCAT_TEST(cinterface_valid_module, set_valid_read_timeout)
+{
+    unsigned long old_read_timeout = comserial_set_read_timeout(m_comserial, 15);
+    UNSIGNED_LONGS_EQUAL(1000, old_read_timeout);
+    UNSIGNED_LONGS_EQUAL(15, comserial_get_read_timeout(m_comserial));
+}
+
+SOCAT_TEST(cinterface_valid_module, check_default_write_timeout)
+{
+    UNSIGNED_LONGS_EQUAL(1000, comserial_get_write_timeout(m_comserial));
+}
+
+SOCAT_TEST(cinterface_valid_module, set_valid_write_timeout)
+{
+    unsigned long old_write_timeout = comserial_set_write_timeout(m_comserial, 15);
+    UNSIGNED_LONGS_EQUAL(1000, old_write_timeout);
+    UNSIGNED_LONGS_EQUAL(15, comserial_get_write_timeout(m_comserial));
 }
 
 #endif /* end of include guard: UT_CMODULE_H_UJEVLXFG */

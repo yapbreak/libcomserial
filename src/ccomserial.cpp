@@ -134,3 +134,43 @@ char comserial_set_parity(comserial_t device, char parity)
 
     return old_parity;
 }
+
+unsigned long comserial_get_read_timeout(const comserial_t device)
+{
+    unsigned int timeout = 0;
+
+    if (device != NULL)
+        timeout = device->dev->get_read_timeout();
+
+    return timeout;
+}
+
+unsigned long comserial_set_read_timeout(comserial_t device, unsigned int timeout)
+{
+    unsigned int old_timeout = 0;
+
+    if (device != NULL)
+        old_timeout = device->dev->set_read_timeout(timeout);
+
+    return old_timeout;
+}
+
+unsigned long comserial_get_write_timeout(const comserial_t device)
+{
+    unsigned int timeout = 0;
+
+    if (device != NULL)
+        timeout = device->dev->get_write_timeout();
+
+    return timeout;
+}
+
+unsigned long comserial_set_write_timeout(comserial_t device, unsigned int timeout)
+{
+    unsigned int old_timeout = 0;
+
+    if (device != NULL)
+        old_timeout = device->dev->set_write_timeout(timeout);
+
+    return old_timeout;
+}
