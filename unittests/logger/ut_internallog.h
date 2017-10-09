@@ -14,7 +14,7 @@ TEST_GROUP(internallog)
 {
     void setup()
     {
-        std::ostringstream my_real_stream = std::ostringstream();
+        my_real_stream = std::ostringstream();
     };
 
     void teardown()

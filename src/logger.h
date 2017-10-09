@@ -20,7 +20,8 @@ namespace logger {
 
             std::string get_formatted_string() const
             {
-                unsigned char *data_ptr = (unsigned char *) m_data;
+                const unsigned char *data_ptr =
+                                    static_cast<const unsigned char *>(m_data);
 
                 std::stringstream output;
                 output << "Dump " << m_size
@@ -50,7 +51,7 @@ namespace logger {
                     }
 
                     hexa << std::hex << std::setfill('0') << std::setw(2)
-                         << (unsigned int) (*data_ptr);
+                         << static_cast<unsigned int>(*data_ptr);
                     hexa << " ";
 
                     if (isprint(*data_ptr))
