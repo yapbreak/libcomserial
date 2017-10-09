@@ -174,3 +174,44 @@ unsigned long comserial_set_write_timeout(comserial_t device, unsigned int timeo
 
     return old_timeout;
 }
+
+ssize_t comserial_write_buffer(const comserial_t device, const uint8_t *buffer, size_t length)
+{
+    ssize_t write_length = 0;
+
+    if (device == NULL)
+        return -COMSER_IOERROR;
+
+    try {
+        write_length = device->dev->write_buffer(buffer, length);
+    } catch (com::exception::invalid_input) {
+        return -COMSER_IOERROR;
+    } catch (com::exception::runtime_error) {
+        return -COMSER_IOERROR;
+    } catch (com::exception::timeout e) {
+        return -e.get_bytes();
+    }
+
+    return write_length;
+}
+
+ssize_t comserial_read_buffer(const comserial_t device, uint8_t *buffer, size_t length)
+{
+    ssize_t read_length = 0;
+
+    if (device == NULL)
+        return -COMSER_IOERROR;
+
+    try {
+        read_length = device->dev->read_buffer(buffer, length);
+    } catch (com::exception::invalid_input) {
+        return -COMSER_IOERROR;
+    } catch (com::exception::runtime_error) {
+        return -COMSER_IOERROR;
+    } catch (com::exception::timeout e) {
+        return -e.get_bytes();
+    }
+
+    return read_length;
+}
+

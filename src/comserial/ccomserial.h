@@ -5,6 +5,11 @@
 extern "C" {
 #endif
 
+#include <stdlib.h>
+#include <stdint.h>
+
+#define COMSER_IOERROR                              (0x7fffffff)
+
 struct comserial_s;
 typedef struct comserial_s *comserial_t;
 
@@ -27,6 +32,9 @@ unsigned long comserial_get_read_timeout(const comserial_t device);
 unsigned long comserial_set_read_timeout(comserial_t device, unsigned int parity);
 unsigned long comserial_get_write_timeout(const comserial_t device);
 unsigned long comserial_set_write_timeout(comserial_t device, unsigned int parity);
+
+ssize_t comserial_write_buffer(const comserial_t device, const uint8_t *buffer, size_t length);
+ssize_t comserial_read_buffer(const comserial_t device, uint8_t *buffer, size_t length);
 
 #ifdef __cplusplus
 };

@@ -171,7 +171,7 @@ size_t serial::write_buffer(const uint8_t *buffer, size_t length)
                 size_written += w;
             }
         } else {
-            throw exception::timeout();
+            throw exception::timeout(size_written);
         }
     }
 
@@ -203,12 +203,12 @@ size_t serial::read_buffer(uint8_t *buffer, size_t length)
                 if (r < 0)
                     throw exception::runtime_error("Fail to read");
                 else if (r == 0)
-                    throw exception::timeout();
+                    throw exception::timeout(size_read);
 
                 size_read += r;
             }
         } else {
-            throw exception::timeout();
+            throw exception::timeout(size_read);
         }
     }
 

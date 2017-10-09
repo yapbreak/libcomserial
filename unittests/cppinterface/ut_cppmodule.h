@@ -416,14 +416,20 @@ SOCAT_TEST(cppinterface_io, read_error)
 
 SOCAT_TEST(cppinterface_io, read_timeout)
 {
-    uint8_t buffer[16] = { };
+    uint8_t buffer[4] = { 0xde, 0xad, 0xbe, 0xef };
+    uint8_t read_buffer[16] = { };
 
     CHECK_THROWS(com::exception::timeout,
-                 in->read_buffer(buffer, 16));
+                 in->read_buffer(read_buffer, 16));
 
     in->write_buffer(buffer, 4);
-    CHECK_THROWS(com::exception::timeout,
-                 out->read_buffer(buffer, 16));
+    try {
+        out->read_buffer(read_buffer, 16);
+        FAIL("No exception thrown");
+    } catch (com::exception::timeout e) {
+        UNSIGNED_LONGS_EQUAL(4, e.get_bytes());
+    }
+    MEMCMP_EQUAL(buffer, read_buffer, 4);
 }
 
 #endif /* end of include guard: UT_CPPMODULE_H_OWBGUT0J */

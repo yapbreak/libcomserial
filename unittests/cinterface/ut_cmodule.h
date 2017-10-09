@@ -5,6 +5,7 @@
 
 #include <CppUTest/TestHarness.h>
 #include <string>
+#include <cstring>
 
 TEST_GROUP(cinterface_module)
 {
@@ -228,4 +229,103 @@ SOCAT_TEST(cinterface_valid_module, set_valid_write_timeout)
     UNSIGNED_LONGS_EQUAL(15, comserial_get_write_timeout(m_comserial));
 }
 
+TEST_GROUP(cinterface_io)
+{
+    fake::serial *m_serial;
+    std::string com_in = "com_in";
+    std::string com_out = "com_out";
+
+    comserial_t in;
+    comserial_t out;
+
+    void setup()
+    {
+        m_serial = new fake::serial(com_in, com_out);
+
+        in = comserial_create_device(com_in.c_str());
+        out = comserial_create_device(com_out.c_str());
+    };
+
+    void teardown()
+    {
+        comserial_destroy_device(&out);
+        comserial_destroy_device(&in);
+
+        delete m_serial;
+    };
+};
+
+SOCAT_TEST(cinterface_io, write_buffer)
+{
+    uint8_t buffer[16];
+    for (size_t index = 0; index < 16; index++)
+        buffer[index] = static_cast<uint8_t>(index);
+
+    LONGS_EQUAL(16, comserial_write_buffer(in, buffer, 16));
+}
+
+SOCAT_TEST(cinterface_io, write_error)
+{
+    uint8_t buffer[16];
+    LONGS_EQUAL(-COMSER_IOERROR, comserial_write_buffer(NULL, buffer, 16));
+    LONGS_EQUAL(-COMSER_IOERROR, comserial_write_buffer(in, NULL, 16));
+    LONGS_EQUAL(-COMSER_IOERROR, comserial_write_buffer(in, buffer, 0));
+}
+
+SOCAT_TEST(cinterface_io, read_buffer)
+{
+    uint8_t buffer[16];
+    uint8_t read_buffer[18];
+    memset(read_buffer, 0xfe, sizeof(read_buffer));
+
+    for (size_t index = 0; index < 16; index++)
+        buffer[index] = static_cast<uint8_t>(index);
+
+    comserial_write_buffer(in, buffer, 16);
+
+    ssize_t read_size = comserial_read_buffer(out, &read_buffer[1], 16);
+
+    LONGS_EQUAL(16, read_size);
+    BYTES_EQUAL(0xfe, read_buffer[0]);
+    BYTES_EQUAL(0xfe, read_buffer[read_size + 1]);
+    MEMCMP_EQUAL(buffer, &read_buffer[1], 16);
+}
+
+SOCAT_TEST(cinterface_io, read_buffer_small)
+{
+    uint8_t buffer[8];
+    uint8_t read_buffer[10];
+    memset(read_buffer, 0xfe, sizeof(read_buffer));
+
+    for (size_t index = 0; index < 8; index++)
+        buffer[index] = static_cast<uint8_t>(rand());
+
+    LONGS_EQUAL(8, comserial_write_buffer(in, buffer, 8));
+
+    ssize_t read_size = comserial_read_buffer(out, &read_buffer[1], 8);
+
+    LONGS_EQUAL(8, read_size);
+    BYTES_EQUAL(0xfe, read_buffer[0]);
+    BYTES_EQUAL(0xfe, read_buffer[read_size + 1]);
+    MEMCMP_EQUAL(buffer, &read_buffer[1], 8);
+}
+
+SOCAT_TEST(cinterface_io, read_error)
+{
+    uint8_t buffer[16];
+    LONGS_EQUAL(-COMSER_IOERROR, comserial_read_buffer(NULL, buffer, 16));
+    LONGS_EQUAL(-COMSER_IOERROR, comserial_read_buffer(in, NULL, 16));
+    LONGS_EQUAL(-COMSER_IOERROR, comserial_read_buffer(in, buffer, 0));
+}
+
+SOCAT_TEST(cinterface_io, read_timeout)
+{
+    uint8_t buffer[4] = { 0xde, 0xad, 0xbe, 0xef };
+    uint8_t read_buffer[16] = { };
+
+    LONGS_EQUAL(0, comserial_read_buffer(in, read_buffer, 16));
+    LONGS_EQUAL(4, comserial_write_buffer(in, buffer, 4));
+    LONGS_EQUAL(-4, comserial_read_buffer(out, read_buffer, 16));
+    MEMCMP_EQUAL(buffer, read_buffer, 4);
+}
 #endif /* end of include guard: UT_CMODULE_H_UJEVLXFG */

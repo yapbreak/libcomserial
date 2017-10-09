@@ -122,9 +122,19 @@ namespace com
         class timeout: public std::exception
         {
             public:
+                explicit timeout(size_t bytes = 0): m_bytes(bytes) {
+                }
+
                 virtual const char *what() const throw() {
                     return "Timeout reached";
-                };
+                }
+
+                size_t get_bytes() const {
+                    return m_bytes;
+                }
+
+            private:
+                const size_t m_bytes;
         };
 
         class runtime_error: public std::exception

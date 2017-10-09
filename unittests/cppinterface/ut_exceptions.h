@@ -88,6 +88,12 @@ TEST(cppinterface_exception, invalid_input)
 TEST(cppinterface_exception, timeout)
 {
     check_exception<com::exception::timeout>("Timeout reached");
+
+    com::exception::timeout t1(42);
+    UNSIGNED_LONGS_EQUAL(42, t1.get_bytes());
+
+    com::exception::timeout t2(21);
+    UNSIGNED_LONGS_EQUAL(21, t2.get_bytes());
 }
 
 TEST(cppinterface_exception, runtime_error)
