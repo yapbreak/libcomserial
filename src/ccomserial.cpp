@@ -188,7 +188,7 @@ ssize_t comserial_write_buffer(const comserial_t device, const uint8_t *buffer, 
         return -COMSER_IOERROR;
     } catch (com::exception::runtime_error) {
         return -COMSER_IOERROR;
-    } catch (com::exception::timeout e) {
+    } catch (const com::exception::timeout &e) {
         return -e.get_bytes();
     }
 
@@ -208,7 +208,7 @@ ssize_t comserial_read_buffer(const comserial_t device, uint8_t *buffer, size_t 
         return -COMSER_IOERROR;
     } catch (com::exception::runtime_error) {
         return -COMSER_IOERROR;
-    } catch (com::exception::timeout e) {
+    } catch (const com::exception::timeout &e) {
         return -e.get_bytes();
     }
 

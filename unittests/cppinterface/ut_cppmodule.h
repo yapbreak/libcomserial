@@ -426,7 +426,7 @@ SOCAT_TEST(cppinterface_io, read_timeout)
     try {
         out->read_buffer(read_buffer, 16);
         FAIL("No exception thrown");
-    } catch (com::exception::timeout e) {
+    } catch (const com::exception::timeout &e) {
         UNSIGNED_LONGS_EQUAL(4, e.get_bytes());
     }
     MEMCMP_EQUAL(buffer, read_buffer, 4);
