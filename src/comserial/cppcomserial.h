@@ -34,6 +34,9 @@ namespace com {
             unsigned int get_write_timeout() const;
             unsigned int set_write_timeout(unsigned int timeout);
 
+            size_t write_buffer(const uint8_t *buffer, size_t length);
+            size_t read_buffer(uint8_t *buffer, size_t length);
+
         private:
             void open_device(const char *device);
             void close_device();

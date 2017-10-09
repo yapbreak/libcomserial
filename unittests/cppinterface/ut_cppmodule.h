@@ -5,6 +5,7 @@
 
 #include <CppUTest/TestHarness.h>
 #include <string>
+#include <cstring>
 
 #include "logger.h"
 
@@ -320,6 +321,109 @@ SOCAT_TEST(cppinterface_module, set_write_timeout)
 
     UNSIGNED_LONGS_EQUAL(1000, old_timeout);
     UNSIGNED_LONGS_EQUAL(10, serial.get_write_timeout());
+}
+
+TEST_GROUP(cppinterface_io)
+{
+    fake::serial *m_serial;
+    std::string com_in = "com_in";
+    std::string com_out = "com_out";
+
+    com::serial *in;
+    com::serial *out;
+
+    void setup()
+    {
+        m_serial = new fake::serial(com_in, com_out);
+
+        in = new com::serial(com_in);
+        out = new com::serial(com_out);
+    };
+
+    void teardown()
+    {
+        delete out;
+        delete in;
+
+        delete m_serial;
+    };
+};
+
+SOCAT_TEST(cppinterface_io, write_buffer)
+{
+    uint8_t buffer[16];
+    for (size_t index = 0; index < 16; index++)
+        buffer[index] = static_cast<uint8_t>(index);
+
+    UNSIGNED_LONGS_EQUAL(16, in->write_buffer(buffer, 16));
+}
+
+SOCAT_TEST(cppinterface_io, write_error)
+{
+    uint8_t buffer[16];
+    CHECK_THROWS(com::exception::invalid_input,
+                 in->write_buffer(NULL, 16));
+    CHECK_THROWS(com::exception::invalid_input,
+                 in->write_buffer(buffer, 0));
+}
+
+SOCAT_TEST(cppinterface_io, read_buffer)
+{
+    uint8_t buffer[16];
+    uint8_t read_buffer[18];
+    memset(read_buffer, 0xfe, sizeof(read_buffer));
+
+    for (size_t index = 0; index < 16; index++)
+        buffer[index] = static_cast<uint8_t>(index);
+
+    in->write_buffer(buffer, 16);
+
+    size_t read_size = out->read_buffer(&read_buffer[1], 16);
+
+    UNSIGNED_LONGS_EQUAL(16, read_size);
+    BYTES_EQUAL(0xfe, read_buffer[0]);
+    BYTES_EQUAL(0xfe, read_buffer[read_size + 1]);
+    MEMCMP_EQUAL(buffer, &read_buffer[1], 16);
+}
+
+SOCAT_TEST(cppinterface_io, read_buffer_small)
+{
+    uint8_t buffer[8];
+    uint8_t read_buffer[10];
+    memset(read_buffer, 0xfe, sizeof(read_buffer));
+
+    for (size_t index = 0; index < 8; index++)
+        buffer[index] = static_cast<uint8_t>(rand());
+
+    UNSIGNED_LONGS_EQUAL(8, in->write_buffer(buffer, 8));
+
+    size_t read_size = out->read_buffer(&read_buffer[1], 8);
+
+    UNSIGNED_LONGS_EQUAL(8, read_size);
+    BYTES_EQUAL(0xfe, read_buffer[0]);
+    BYTES_EQUAL(0xfe, read_buffer[read_size + 1]);
+    MEMCMP_EQUAL(buffer, &read_buffer[1], 8);
+}
+
+SOCAT_TEST(cppinterface_io, read_error)
+{
+    uint8_t buffer[16];
+    CHECK_THROWS(com::exception::invalid_input,
+                 in->read_buffer(NULL, 16));
+    CHECK_THROWS(com::exception::invalid_input,
+                 in->read_buffer(buffer, 0));
+}
+
+SOCAT_TEST(cppinterface_io, read_timeout)
+{
+    uint8_t buffer[16] = { };
+
+    CHECK_THROWS(com::exception::timeout,
+                 in->read_buffer(buffer, 16));
+
+    in->write_buffer(buffer, 4);
+    CHECK_THROWS(com::exception::timeout,
+                 out->read_buffer(buffer, 16));
 }
 
 #endif /* end of include guard: UT_CPPMODULE_H_OWBGUT0J */

@@ -143,6 +143,78 @@ unsigned int serial::set_write_timeout(unsigned int timeout)
     return old_timeout;
 }
 
+size_t serial::write_buffer(const uint8_t *buffer, size_t length)
+{
+    if (buffer == NULL || length == 0)
+        throw exception::invalid_input();
+
+    size_t size_written = 0;
+
+    fd_set write_set;
+    struct timeval tv = { m_write_timeout / 1000,
+                          (m_write_timeout % 1000) * 1000 };
+
+    FD_ZERO(&write_set);
+    FD_SET(m_fd, &write_set);
+
+    while (size_written != length) {
+        int ret = select(m_fd + 1, NULL, &write_set, NULL, &tv);
+        if (ret < 0) {
+            throw exception::runtime_error("Fail to select");
+        } else if (ret != 0) {
+            if (FD_ISSET(m_fd, &write_set)) {
+                ssize_t w = write(m_fd, buffer + size_written,
+                                        length - size_written);
+                if (w < 0)
+                    throw exception::runtime_error("Fail to write");
+
+                size_written += w;
+            }
+        } else {
+            throw exception::timeout();
+        }
+    }
+
+    return size_written;
+}
+
+size_t serial::read_buffer(uint8_t *buffer, size_t length)
+{
+    if (buffer == NULL || length == 0)
+        throw exception::invalid_input();
+
+    size_t size_read = 0;
+
+    fd_set read_set;
+    struct timeval tv = { m_read_timeout / 1000,
+                          (m_read_timeout % 1000) * 1000 };
+
+    FD_ZERO(&read_set);
+    FD_SET(m_fd, &read_set);
+
+    while (size_read != length) {
+        int ret = select(m_fd + 1, &read_set, NULL, NULL, &tv);
+        if (ret < 0) {
+            throw exception::runtime_error("Fail to select");
+        } else if (ret != 0) {
+            if (FD_ISSET(m_fd, &read_set)) {
+                ssize_t r = read(m_fd, buffer + size_read,
+                                       length - size_read);
+                if (r < 0)
+                    throw exception::runtime_error("Fail to read");
+                else if (r == 0)
+                    throw exception::timeout();
+
+                size_read += r;
+            }
+        } else {
+            throw exception::timeout();
+        }
+    }
+
+    return size_read;
+}
+
 void serial::open_device(const char *device)
 {
     m_fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY | O_SYNC);

@@ -111,6 +111,39 @@ namespace com
                 std::string m_what;
         };
 
+        class invalid_input : public std::exception
+        {
+            public:
+                virtual const char *what() const throw() {
+                    return "Invalid argument";
+                };
+        };
+
+        class timeout: public std::exception
+        {
+            public:
+                virtual const char *what() const throw() {
+                    return "Timeout reached";
+                };
+        };
+
+        class runtime_error: public std::exception
+        {
+            public:
+                explicit runtime_error(const char *message) : m_what() {
+                    std::stringstream ss;
+                    ss << "Runtime error: " << message;
+                    m_what.assign(ss.str());
+                }
+
+                virtual const char *what() const throw() {
+                    return m_what.c_str();
+                }
+
+            private:
+                std::string m_what;
+        };
+
     };
 
 };

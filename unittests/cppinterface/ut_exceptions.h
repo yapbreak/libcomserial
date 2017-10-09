@@ -80,4 +80,27 @@ TEST(cppinterface_exception, invalid_device)
     delete pe;
 };
 
+TEST(cppinterface_exception, invalid_input)
+{
+    check_exception<com::exception::invalid_input>("Invalid argument");
+}
+
+TEST(cppinterface_exception, timeout)
+{
+    check_exception<com::exception::timeout>("Timeout reached");
+}
+
+TEST(cppinterface_exception, runtime_error)
+{
+    com::exception::runtime_error *pe =
+                            new com::exception::runtime_error("my message");
+    STRCMP_EQUAL("Runtime error: my message", pe->what());
+    delete pe;
+
+    pe = new com::exception::runtime_error("another reason");
+    STRCMP_EQUAL("Runtime error: another reason", pe->what());
+    delete pe;
+};
+
+
 #endif /* end of include guard: UT_EXCEPTIONS_H_BZJ0KWTM */
