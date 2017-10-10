@@ -1,3 +1,9 @@
+/**
+* @file logger.h
+* @brief Define helper class to print log on stderr, mainly for debug purpose.
+* @author Adrien Oliva
+* @date 2017-10-10
+*/
 #ifndef LOGGER_H_SOWJCIS8
 #define LOGGER_H_SOWJCIS8
 
@@ -81,6 +87,13 @@ namespace logger {
         return out;
     }
 
+    /**
+    * @brief Contains all information needed to localize a given point in
+    *        codebase.
+    *
+    * This structure especially retains current function name, current file
+    * and current line.
+    */
     struct log_location {
         log_location(const char *function,
                      const char *file,
@@ -106,6 +119,9 @@ namespace logger {
         trace,
     };
 
+    /**
+    * @brief Main class that allow logging to a given ostream destination.
+    */
     class InternalLog: public std::ostream
     {
         public:

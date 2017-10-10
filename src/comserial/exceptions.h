@@ -43,6 +43,12 @@ namespace com
                 };
         };
 
+        /**
+        * @brief Exception thrown when an invalid data size value is given to
+        *         a serial device.
+        *
+        * The given data size is shown in exception message.
+        */
         class invalid_data_size : public std::exception
         {
             public:
@@ -77,6 +83,12 @@ namespace com
                 std::string m_what;
         };
 
+        /**
+        * @brief Exception thrown when an invalid parity value is given to a
+        *        serial device.
+        *
+        * The given parity is shown in exception message.
+        */
         class invalid_parity : public std::exception
         {
             public:
@@ -111,6 +123,10 @@ namespace com
                 std::string m_what;
         };
 
+        /**
+        * @brief Exception thrown when an invalid argument is given to any
+        *        function.
+        */
         class invalid_input : public std::exception
         {
             public:
