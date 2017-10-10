@@ -1,3 +1,3 @@
 ### Feature
 
-- Create code & test structure
+- Fully functionnal library with C and C++ interfaces
