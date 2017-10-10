@@ -1,3 +1,9 @@
+/**
+* @file ccomserial.h
+* @brief C API definitions
+* @author Adrien Oliva
+* @date 2017-10-10
+*/
 #ifndef CSERIALCOMM_H_CVLSDIF9
 #define CSERIALCOMM_H_CVLSDIF9
 
@@ -10,10 +16,38 @@ extern "C" {
 
 #define COMSER_IOERROR                              (0x7fffffff)
 
+/**
+* @brief Opaque structure symbolizing a serial com device.
+*/
 struct comserial_s;
+
+/**
+* @brief Main type used in the whole libcomserial API.
+*/
 typedef struct comserial_s *comserial_t;
 
+/**
+* @brief Create and open a serial device given its path name.
+*
+* @param device Path to serial device to open and configure.
+*
+* @return Com Serial handle on the given device or NULL on error.
+*
+* By default, serial device is opened with the following configuration:
+*   - speed set at 19200 bps
+*   - data size set to 8 bits, without parity and 1 stop bit (8n1)
+*   - read and write timeout are set to 1000 ms
+*   .
+*/
 comserial_t comserial_create_device(const char *device);
+
+/**
+* @brief Destroy and clean memory after use of serial device.
+*
+* @param device Pointer to the device to clean.
+*
+* @note @em *device is set to NULL upon successful execution.
+*/
 void comserial_destroy_device(comserial_t *device);
 
 unsigned int comserial_get_speed(const comserial_t device);

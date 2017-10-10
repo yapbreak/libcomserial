@@ -9,7 +9,10 @@ endif
 
 SUBDIRS = $(SOURCE_DIR)
 
-ALLPHONY = coverage
+ALLPHONY = coverage doc
+
+doc:
+	@(cd doc && $(MAKE) $@)
 
 if COVERAGE
 
