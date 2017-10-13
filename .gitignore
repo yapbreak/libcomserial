@@ -91,3 +91,7 @@ cpputest*.xml
 
 # Build folder
 build/
+
+# Doxygen
+doc/output
+doc/Doxyfile

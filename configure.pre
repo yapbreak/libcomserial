@@ -2,7 +2,7 @@ AC_PREREQ([2.69])
 AC_INIT()
 AM_INIT_AUTOMAKE([-Wall -Werror])
 AC_CONFIG_MACRO_DIR([m4])
-AC_CONFIG_SRCDIR([src/comserial/comserial.h])
+AC_CONFIG_SRCDIR([src/comserial.h])
 AC_CONFIG_HEADERS([src/config.h])
 AC_PREFIX_DEFAULT(/usr/local)
 
@@ -171,6 +171,10 @@ AC_CHECK_PROG([genhtml], [genhtml], [yes])
 AM_CONDITIONAL(GENHTML, [test "x${genhtml}" = "xyes"])
 AM_CONDITIONAL(PERLGD, [perldoc -l GD])
 
+# Check doxygen installation
+AC_CHECK_PROG([doxygen], [doxygen], [yes])
+AM_CONDITIONAL(DOXYGEN, [test "x${doxygen}" = "xyes"])
+
 # Generate files
 AC_CONFIG_FILES([Makefile
                  src/Makefile
@@ -180,6 +184,8 @@ AC_CONFIG_FILES([Makefile
                  unittests/cinterface/Makefile
                  unittests/cppinterface/Makefile
                  unittests/logger/Makefile
+                 doc/Makefile
+                 doc/Doxyfile
                 ])
 
 AM_SILENT_RULES([yes])

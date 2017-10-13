@@ -1,3 +1,9 @@
+/**
+* @file cppcomserial.cpp
+* @brief C++ implementation of com::serial.
+* @author Adrien Oliva
+* @date 2017-10-13
+*/
 #include "comserial/cppcomserial.h"
 #include "logger.h"
 
