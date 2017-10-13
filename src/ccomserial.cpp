@@ -1,9 +1,24 @@
+/**
+* @file ccomserial.cpp
+* @brief Implementation of C interface of libcomserial.
+* @author Adrien Oliva
+* @date 2017-10-13
+*/
 #include "comserial/ccomserial.h"
 #include "comserial/cppcomserial.h"
 
 #include <cstdlib>
 
+/**
+* @brief Opaque structure symbolizing a serial com device.
+*
+* The structure is needed in C interface to encapsulate a com::serial object
+* instance.
+*/
 struct comserial_s {
+    /**
+     * @brief Main C++ object instance.
+     */
     com::serial *dev;
 };
 

@@ -1,3 +1,9 @@
+/**
+* @file comserial.h
+* @brief Main include file of libcomserial.
+* @author Adrien Oliva
+* @date 2017-10-13
+*/
 #ifndef SERIALCOMM_H_PSJAZOOR
 #define SERIALCOMM_H_PSJAZOOR
 
