@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
     while (!quit) {
         char buffer[1024] = {};
         printf("> ");
-        scanf("%s", buffer);
+        scanf("%1023s", buffer);
         if (strcmp(buffer, "/quit") == 0) {
             quit = 1;
         } else {
@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
             if (len == -COMSER_IOERROR) {
                 printf("Communication error\n");
             } else if (len < 0) {
-                printf("Timeout reached (%d bytes written befor timeout)\n",
+                printf("Timeout reached (%ld bytes written befor timeout)\n",
                        -len);
             } else if (len != size) {
                 printf("Unknown error\n");
