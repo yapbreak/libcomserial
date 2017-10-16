@@ -186,6 +186,8 @@ AC_CONFIG_FILES([Makefile
                  unittests/logger/Makefile
                  doc/Makefile
                  doc/Doxyfile
+                 redist/Makefile
+                 redist/comserial.pc
                 ])
 
 AM_SILENT_RULES([yes])

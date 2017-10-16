@@ -2,17 +2,14 @@ ACLOCAL_AMFLAGS = -I m4
 
 include Makefile.common
 
-SOURCE_DIR = src
+SOURCE_DIR = src doc redist
 if CPPUTEST
 SOURCE_DIR += unittests
 endif
 
 SUBDIRS = $(SOURCE_DIR)
 
-ALLPHONY = coverage doc
-
-doc:
-	@(cd doc && $(MAKE) $@)
+ALLPHONY = coverage
 
 if COVERAGE
 

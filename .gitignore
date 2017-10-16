@@ -95,3 +95,6 @@ build/
 # Doxygen
 doc/output
 doc/Doxyfile
+
+# Pkg-Config
+*.pc
