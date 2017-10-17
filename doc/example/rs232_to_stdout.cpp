@@ -4,8 +4,6 @@
 * @author Adrien Oliva
 * @date 2017-10-13
 *
-* @example C++ API
-*
 * This program show how to use C++ API.
 *
 * This program will open a serial device, set read timeout to 1 second and read
@@ -22,6 +20,14 @@
 
 #include <comserial.h>
 
+/**
+* @brief Main function of sample software.
+*
+* @param argc Number of arguments
+* @param argv[] Array of arguments
+*
+* @return 0 on success.
+*/
 int main(int argc, char *argv[])
 {
     if (argc != 2) {

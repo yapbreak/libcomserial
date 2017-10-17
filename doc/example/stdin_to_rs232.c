@@ -5,8 +5,6 @@
 * @version 
 * @date 2017-10-13
 *
-* @example C API
-*
 * This program shows how to use C API.
 *
 * Compile this program with:
@@ -18,7 +16,15 @@
 
 #include <comserial.h>
 
-int main(int argc, char *argv[])
+/**
+* @brief Main function of sample software.
+*
+* @param argc Number of arguments
+* @param argv[] Array of arguments
+*
+* @return 0 on success.
+*/
+int main(int argc, const char *argv[])
 {
     int quit = 0;
     comserial_t serial;

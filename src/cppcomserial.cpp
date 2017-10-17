@@ -245,32 +245,64 @@ void serial::close_device()
 
 void serial::check_and_set_speed(unsigned int new_speed)
 {
-#define VALID(value) case value: \
-    m_termios_speed = B ## value; \
-    break;
     switch (new_speed) {
-        VALID(50)
-        VALID(75)
-        VALID(110)
-        VALID(134)
-        VALID(150)
-        VALID(200)
-        VALID(300)
-        VALID(600)
-        VALID(1200)
-        VALID(1800)
-        VALID(2400)
-        VALID(4800)
-        VALID(9600)
-        VALID(19200)
-        VALID(38400)
-        VALID(57600)
-        VALID(115200)
-        VALID(230400)
+        case 50:
+            m_termios_speed = B50;
+            break;
+        case 75:
+            m_termios_speed = B75;
+            break;
+        case 110:
+            m_termios_speed = B110;
+            break;
+        case 134:
+            m_termios_speed = B134;
+            break;
+        case 150:
+            m_termios_speed = B150;
+            break;
+        case 200:
+            m_termios_speed = B200;
+            break;
+        case 300:
+            m_termios_speed = B300;
+            break;
+        case 600:
+            m_termios_speed = B600;
+            break;
+        case 1200:
+            m_termios_speed = B1200;
+            break;
+        case 1800:
+            m_termios_speed = B1800;
+            break;
+        case 2400:
+            m_termios_speed = B2400;
+            break;
+        case 4800:
+            m_termios_speed = B4800;
+            break;
+        case 9600:
+            m_termios_speed = B9600;
+            break;
+        case 19200:
+            m_termios_speed = B19200;
+            break;
+        case 38400:
+            m_termios_speed = B38400;
+            break;
+        case 57600:
+            m_termios_speed = B57600;
+            break;
+        case 115200:
+            m_termios_speed = B115200;
+            break;
+        case 230400:
+            m_termios_speed = B230400;
+            break;
         default:
             throw com::exception::invalid_speed(new_speed);
     }
-#undef VALID
 
     cfsetispeed(&m_options, m_termios_speed);
     cfsetospeed(&m_options, m_termios_speed);
@@ -278,20 +310,27 @@ void serial::check_and_set_speed(unsigned int new_speed)
 
 void serial::check_and_set_data_size(unsigned int new_datasize)
 {
-#define VALID(value) case value: \
-    m_options.c_cflag &= ~CSIZE; \
-    m_options.c_cflag |= CS ## value; \
-    break;
     switch (new_datasize)
     {
-        VALID(5)
-        VALID(6)
-        VALID(7)
-        VALID(8)
+        case 5:
+            m_options.c_cflag &= ~CSIZE;
+            m_options.c_cflag |= CS5;
+            break;
+        case 6:
+            m_options.c_cflag &= ~CSIZE;
+            m_options.c_cflag |= CS6;
+            break;
+        case 7:
+            m_options.c_cflag &= ~CSIZE;
+            m_options.c_cflag |= CS7;
+            break;
+        case 8:
+            m_options.c_cflag &= ~CSIZE;
+            m_options.c_cflag |= CS8;
+            break;
         default:
             throw com::exception::invalid_data_size(new_datasize);
     }
-#undef VALID
 }
 
 void serial::check_and_set_stop_size(unsigned int new_stopsize)
