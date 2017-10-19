@@ -1,5 +1,13 @@
 # ChangeLog
 
+## v1.0.0 (2017-10-19)
+
+### Feature
+
+- Fully documented using doxygen (libraries/libcomserial#1)
+- Allow pkg-config usage to find the right compile flags (libraries/libcomserial#2)
+- Add simple examples
+
 ## v0.99.0 (2017-10-10)
 
 ### Feature

@@ -5,8 +5,15 @@ on GNU/Linux (or any POSIX system with termios interface).
 
 ---
 
+- Master branch:
+
 [![build_status](https://gitlab.yapbreak.fr/libraries/libcomserial/badges/master/build.svg)](https://gitlab.yapbreak.fr/libraries/libcomserial/commits/master)
 [![coverage report](https://gitlab.yapbreak.fr/libraries/libcomserial/badges/master/coverage.svg)](https://gitlab.yapbreak.fr/libraries/libcomserial/commits/master)
+
+- Latest stable release:
+
+[![build_status](https://gitlab.yapbreak.fr/libraries/libcomserial/badges/v1/build.svg)](https://gitlab.yapbreak.fr/libraries/libcomserial/commits/v1)
+[![coverage report](https://gitlab.yapbreak.fr/libraries/libcomserial/badges/v1/coverage.svg)](https://gitlab.yapbreak.fr/libraries/libcomserial/commits/v1)
 
 ---
 
