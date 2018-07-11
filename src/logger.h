@@ -11,6 +11,8 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
+#include <cstring>
+#include <fstream>
 
 #include <unistd.h>
 
@@ -57,17 +59,14 @@ namespace logger {
 
                 size_t i = 0;
 
+                offset.str("");
+                offset << "\n";
+                offset << std::setw(8) << std::setfill('0')
+                       << std::hex << (i);
+                offset << " ";
+                hexa.str("");
+                ascii.str("");
                 for (i = 0; i < m_size; i++) {
-                    if (i % 16 == 0) {
-                        output << "\n";
-                        offset.str("");
-                        offset << std::setw(8) << std::setfill('0')
-                               << std::hex << i;
-                        offset << " ";
-                        hexa.str("");
-                        ascii.str("");
-                    }
-
                     // Add one extra space after 8 bytes.
                     if (i % 16 == 8) {
                         ascii << " ";
@@ -88,7 +87,23 @@ namespace logger {
                     if (i % 16 == 15) {
                         output << offset.str() << hexa.str()
                                << "|" << ascii.str() << "|";
+
+                        offset.str("");
+                        offset << "\n";
+                        offset << std::setw(8) << std::setfill('0')
+                               << std::hex << (i + 1);
+                        offset << " ";
+                        hexa.str("");
+                        ascii.str("");
                     }
+                }
+
+                if (i % 16 != 0) {
+                    output << offset.str();
+                    output << std::setw(49) << std::setfill(' ') << std::left << hexa.str();
+                    output << "|";
+                    output << std::setw(17) << std::setfill(' ') << std::left << ascii.str();
+                    output << "|";
                 }
 
                 return output.str();
@@ -161,6 +176,7 @@ namespace logger {
     * @brief Define different level of logs.
     */
     enum log_level {
+        none = 0,
         fatal,
         alert,
         crit,
@@ -175,7 +191,7 @@ namespace logger {
     /**
     * @brief Main class that allow logging to a given ostream destination.
     */
-    class InternalLog: public std::ostream
+    class InternalLog
     {
         public:
             /**
@@ -185,25 +201,33 @@ namespace logger {
             * @param level The log level of the given logger.
             * @param loc Information of location of log in code base.
             * @param destination Standard output stream to be used.
+            * @param system_level System log level.
             */
             InternalLog(log_level level, const log_location &loc,
-                        std::ostream &destination)
-                : std::ostream(destination.rdbuf())
-                , m_level(level)
+                        std::ostream *destination,
+                        log_level system_level = log_level::trace)
+                : m_level(level)
                 , m_location(loc)
                 , m_output(destination)
+                , m_systemlevel(system_level)
             {
-                print_header();
+                if (m_level <= m_systemlevel)
+                    print_header();
             }
 
             virtual ~InternalLog()
             {
-                *this << "\n";
+                if (m_level <= m_systemlevel) {
+                    (*this) << "\n";
+                }
+                closeOstream(m_output);
             }
 
             template<typename T>
-            friend InternalLog &operator<<(InternalLog &, const T &);
+            friend const InternalLog &operator<<(const InternalLog &, const T &);
 
+            template<typename T>
+            friend const InternalLog &operator<<(const InternalLog &out, const T *value);
             /**
             * @brief Additional overload to handle ostream specific IO
             *         manipulators
@@ -213,8 +237,8 @@ namespace logger {
             *
             * @return Internal logger instance.
             */
-            friend InternalLog &operator<<(InternalLog &out,
-                                           std::ostream &(*f)(std::ostream &));
+            friend const InternalLog &operator<<(const InternalLog &out,
+                                                 std::ostream &(*f)(std::ostream &));
 
         private:
             /**
@@ -267,13 +291,88 @@ namespace logger {
             */
             void print_header()
             {
-                m_output << "[" << char_from_level(m_level) << "] "
-                         << m_location.m_file << ":"
-                         << m_location.m_line << "("
-                         << m_location.m_function << ") ";
+                (*m_output) << "[" << char_from_level(m_level) << "] "
+                            << m_location.m_file << ":"
+                            << m_location.m_line << "("
+                            << m_location.m_function << ") ";
             }
 
-        private:
+        public:
+            /**
+            * @brief Get configured output stream where log are put.
+            *
+            * @return Output stream to be used by logger, depending on
+            *         `CSER_LOGDESTINATION` environment variable.
+            *
+            * If no environment variable is set, default is std::cerr.
+            * When `CSER_LOGDESTINATION` is set to `stdout` or `stderr`, stream
+            * is respectively redirected to std::cout or std::cerr, otherwise,
+            * logger considers variable content as a filename and try to open
+            * it in append mode. If file does not exists, logger create file.
+            * Upon failure, logger falls back to std::cerr.
+            */
+            static std::ostream *getOstream()
+            {
+                const char *cser_logdestination = std::getenv("CSER_LOGDESTINATION");
+                if (cser_logdestination == NULL) {
+                    return new std::ostream(std::cerr.rdbuf());
+                } else {
+                    if (strcmp(cser_logdestination, "stderr") == 0) {
+                        return new std::ostream(std::cerr.rdbuf());
+                    } else if (strcmp(cser_logdestination, "stdout") == 0) {
+                        return new std::ostream(std::cout.rdbuf());
+                    } else {
+                        return new std::ofstream(cser_logdestination,
+                                                 std::ofstream::app);
+                    }
+                }
+                return new std::ostream(std::cerr.rdbuf());
+            }
+
+            /**
+            * @brief Close the given output stream properly.
+            *
+            * @param os Output stream to close.
+            */
+            static void closeOstream(std::ostream *os)
+            {
+                delete os;
+            }
+
+            /**
+            * @brief Get configured logger level to show.
+            *
+            * @return Log level used by logger, depending on `CSER_LOGLEVEL`
+            *         environment variable.
+            *
+            * When `CSER_LOGLEVEL` is set to any number between 0 and 9, logger
+            * directly use the log level and print to output every log message
+            * with level lower or equal to the given system log level.
+            * If `CSER_LOGLEVEL` is set to a number lower than 0, 0 is used.
+            * If `CSER_LOGLEVEL` is set to a number higher than 9, 9 is used.
+            * If `CSER_LOGLEVEL` is not set to a number, 0 is used.
+            * If no environment variable is set, default is 0.
+            */
+            static log_level getSystemLevel()
+            {
+                const char *cser_loglevel = std::getenv("CSER_LOGLEVEL");
+                if (cser_loglevel == NULL) {
+                    return log_level::none;
+                } else {
+                    try {
+                        int value = std::stoi(cser_loglevel);
+                        if (value < 0)
+                            return log_level::none;
+                        if (value > 9)
+                            return log_level::trace;
+                        return static_cast<log_level>(value);
+                    } catch (std::exception &) {
+                        return log_level::none;
+                    }
+                }
+            }
+
+        protected:
             /**
             * @brief Log level.
             */
@@ -285,7 +384,11 @@ namespace logger {
             /**
             * @brief Linked output stream.
             */
-            std::ostream &m_output;
+            std::ostream *m_output;
+            /**
+            * @brief System log level.
+            */
+            log_level m_systemlevel;
     };
 
     /**
@@ -298,9 +401,26 @@ namespace logger {
     * @return Internal logger instance used.
     */
     template<typename T>
-    inline InternalLog &operator<<(InternalLog &out, const T &value)
+    inline const InternalLog &operator<<(const InternalLog &out, const T &value)
     {
-        static_cast<std::ostream &>(out) << value;
+        if (out.m_level <= out.m_systemlevel)
+            (*out.m_output) << value;
+        return out;
+    }
+    /**
+    * @brief Print any type to an internal logger instance.
+    *
+    * @tparam T Typename of data to print
+    * @param out Internal logger instance where data will be printed
+    * @param value Pointer to data to print
+    *
+    * @return Internal logger instance used.
+    */
+    template<typename T>
+    inline const InternalLog &operator<<(const InternalLog &out, const T *value)
+    {
+        if (out.m_level <= out.m_systemlevel)
+            (*out.m_output) << value;
         return out;
     }
 
@@ -312,14 +432,15 @@ namespace logger {
     *
     * @return Internal logger instance used.
     */
-    inline InternalLog &operator<<(InternalLog &out,
-                                   std::ostream &(*f)(std::ostream &))
+    inline const InternalLog &operator<<(const InternalLog &out,
+                                         std::ostream &(*f)(std::ostream &))
     {
-        static_cast<std::ostream &>(out) << f;
+        if (out.m_level <= out.m_systemlevel)
+            (*out.m_output) << f;
         return out;
     }
-};
 
+};
 
 /**
  * @brief Fatal log macro utility to print a fatal message on stderr.
@@ -328,7 +449,9 @@ namespace logger {
                                    logger::log_location(__func__, \
                                                         __FILE__, \
                                                         __LINE__), \
-                                   std::cerr)
+                                   logger::InternalLog::getOstream(), \
+                                   logger::InternalLog::getSystemLevel())
+
 /**
  * @brief Alert log macro utility to print an alert message on stderr.
  */
@@ -336,7 +459,8 @@ namespace logger {
                                    logger::log_location(__func__, \
                                                         __FILE__, \
                                                         __LINE__), \
-                                   std::cerr)
+                                   logger::InternalLog::getOstream(), \
+                                   logger::InternalLog::getSystemLevel())
 /**
  * @brief Critical log macro utility to print a critical message on stderr.
  */
@@ -344,7 +468,8 @@ namespace logger {
                                    logger::log_location(__func__, \
                                                         __FILE__, \
                                                         __LINE__), \
-                                   std::cerr)
+                                   logger::InternalLog::getOstream(), \
+                                   logger::InternalLog::getSystemLevel())
 /**
  * @brief Error log macro utility to print an error message on stderr.
  */
@@ -352,7 +477,8 @@ namespace logger {
                                    logger::log_location(__func__, \
                                                         __FILE__, \
                                                         __LINE__), \
-                                   std::cerr)
+                                   logger::InternalLog::getOstream(), \
+                                   logger::InternalLog::getSystemLevel())
 /**
  * @brief Warning log macro utility to print a warning message on stderr.
  */
@@ -360,7 +486,8 @@ namespace logger {
                                    logger::log_location(__func__, \
                                                         __FILE__, \
                                                         __LINE__), \
-                                   std::cerr)
+                                   logger::InternalLog::getOstream(), \
+                                   logger::InternalLog::getSystemLevel())
 /**
  * @brief Notice log macro utility to print a notice message on stderr.
  */
@@ -368,7 +495,8 @@ namespace logger {
                                    logger::log_location(__func__, \
                                                         __FILE__, \
                                                         __LINE__), \
-                                   std::cerr)
+                                   logger::InternalLog::getOstream(), \
+                                   logger::InternalLog::getSystemLevel())
 /**
  * @brief Information log macro utility to print an information message on
  *        stderr.
@@ -377,7 +505,8 @@ namespace logger {
                                    logger::log_location(__func__, \
                                                         __FILE__, \
                                                         __LINE__), \
-                                   std::cerr)
+                                   logger::InternalLog::getOstream(), \
+                                   logger::InternalLog::getSystemLevel())
 /**
  * @brief Debug log macro utility to print a debug message on stderr.
  */
@@ -385,7 +514,8 @@ namespace logger {
                                    logger::log_location(__func__, \
                                                         __FILE__, \
                                                         __LINE__), \
-                                   std::cerr)
+                                   logger::InternalLog::getOstream(), \
+                                   logger::InternalLog::getSystemLevel())
 /**
  * @brief Trace log macro utility to print a trace message on stderr.
  */
@@ -393,6 +523,7 @@ namespace logger {
                                    logger::log_location(__func__, \
                                                         __FILE__, \
                                                         __LINE__), \
-                                   std::cerr)
+                                   logger::InternalLog::getOstream(), \
+                                   logger::InternalLog::getSystemLevel())
 
 #endif /* end of include guard: LOGGER_H_SOWJCIS8 */

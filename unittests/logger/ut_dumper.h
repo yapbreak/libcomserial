@@ -27,6 +27,7 @@ TEST_GROUP(dumper)
             }
             line_number++;
         }
+        UNSIGNED_LONGS_EQUAL(line_number, line);
     }
 
 };

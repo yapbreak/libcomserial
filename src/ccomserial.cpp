@@ -31,10 +31,10 @@ comserial_t comserial_create_device(const char *device)
     if (serial) {
         try {
             serial->dev = new com::serial(device);
-        } catch (com::exception::device_not_found) {
+        } catch (com::exception::device_not_found &) {
             delete serial;
             serial = NULL;
-        } catch (com::exception::invalid_device) {
+        } catch (com::exception::invalid_device &) {
             delete serial;
             serial = NULL;
         }
@@ -70,7 +70,7 @@ unsigned int comserial_set_speed(comserial_t device, unsigned int speed)
     if (device != NULL) {
         try {
             old_speed = device->dev->set_speed(speed);
-        } catch (com::exception::invalid_speed) {
+        } catch (com::exception::invalid_speed &) {
             old_speed = 0;
         }
     }
@@ -94,7 +94,7 @@ unsigned int comserial_set_data_size(comserial_t device, unsigned int data_size)
     if (device != NULL) {
         try {
             old_data_size = device->dev->set_data_size(data_size);
-        } catch (com::exception::invalid_data_size) {
+        } catch (com::exception::invalid_data_size &) {
             old_data_size = 0;
         }
     }
@@ -118,7 +118,7 @@ unsigned int comserial_set_stop_size(comserial_t device, unsigned int stop_size)
     if (device != NULL) {
         try {
             old_stop_size = device->dev->set_stop_size(stop_size);
-        } catch (com::exception::invalid_stop_size) {
+        } catch (com::exception::invalid_stop_size &) {
             old_stop_size = 0;
         }
     }
@@ -142,7 +142,7 @@ char comserial_set_parity(comserial_t device, char parity)
     if (device != NULL) {
         try {
             old_parity = device->dev->set_parity(parity);
-        } catch (com::exception::invalid_parity) {
+        } catch (com::exception::invalid_parity &) {
             old_parity = 0;
         }
     }
@@ -199,9 +199,9 @@ ssize_t comserial_write_buffer(const comserial_t device, const uint8_t *buffer, 
 
     try {
         write_length = device->dev->write_buffer(buffer, length);
-    } catch (com::exception::invalid_input) {
+    } catch (com::exception::invalid_input &) {
         return -COMSER_IOERROR;
-    } catch (com::exception::runtime_error) {
+    } catch (com::exception::runtime_error &) {
         return -COMSER_IOERROR;
     } catch (const com::exception::timeout &e) {
         return -e.get_bytes();
@@ -219,9 +219,9 @@ ssize_t comserial_read_buffer(const comserial_t device, uint8_t *buffer, size_t 
 
     try {
         read_length = device->dev->read_buffer(buffer, length);
-    } catch (com::exception::invalid_input) {
+    } catch (com::exception::invalid_input &) {
         return -COMSER_IOERROR;
-    } catch (com::exception::runtime_error) {
+    } catch (com::exception::runtime_error &) {
         return -COMSER_IOERROR;
     } catch (const com::exception::timeout &e) {
         return -e.get_bytes();
