@@ -54,3 +54,13 @@ make
 make check # to test library
 sudo make install
 ```
+
+## Configuration
+
+Additional logging facility may be enabled by settings two environment
+variables:
+
+- `CSER_LOGDESTINATION` controls where logs are stored. It could be `stderr`,
+  `stdout` or any file path. Default is `stderr`.
+- `CSER_LOGLEVEL` controls log verbosity from 0 (no log) to 9 (extremely
+  verbose)
