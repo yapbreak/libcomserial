@@ -9,5 +9,6 @@ libcomserial_la_SOURCES  = comserial.h
 libcomserial_la_SOURCES += ccomserial.cpp
 libcomserial_la_SOURCES += cppcomserial.cpp
 libcomserial_la_SOURCES += __init__.cpp
+libcomserial_la_LDFLAGS  = $(LIBVERSION)
 
 include_HEADERS = comserial.h

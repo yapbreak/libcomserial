@@ -7,6 +7,9 @@
 #ifndef LOGGER_H_SOWJCIS8
 #define LOGGER_H_SOWJCIS8
 
+#ifdef HAVE_YAPLOG
+#include <yaplog.h>
+#else
 #include <ostream>
 #include <iostream>
 #include <sstream>
@@ -526,4 +529,5 @@ namespace logger {
                                    logger::InternalLog::getOstream(), \
                                    logger::InternalLog::getSystemLevel())
 
+#endif
 #endif /* end of include guard: LOGGER_H_SOWJCIS8 */

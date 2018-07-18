@@ -148,6 +148,21 @@ PKG_CHECK_MODULES([CPPUTEST], [cpputest], [have_cpputest=yes], [have_cpputest=no
 AM_CONDITIONAL([CPPUTEST], [test "x${have_cpputest}" = "xyes"])
 AS_IF([test "x$have_cpputest" = "xno"],
       [AC_MSG_WARN([Please install CppUTest package to get support of unit tests.])])
+AC_ARG_WITH([yaplog],
+            [AS_HELP_STRING([--with-yaplog], [support external yaplog @<:@default=check@:>@])],
+            [],
+            [with_yaplog=check])
+
+have_yaplog=without
+AS_IF([test "x$with_yaplog" != xno],
+      [PKG_CHECK_MODULES([YAPLOG], [yaplog], [have_yaplog=yes], [have_yaplog=no])]
+     )
+
+AM_CONDITIONAL([YAPLOG], [test "x${have_yaplog}" = "xyes"])
+AS_IF([test "x${have_yaplog}" = "xno"],
+      [AC_MSG_WARN([Please install YapLog (https://gitlab.yapbreak.fr/libraries/libyaplog) to get full log support.])])
+AS_IF([test "x${have_yaplog}" = "xyes"],
+      [AC_DEFINE([HAVE_YAPLOG], [1], [libyaplog is available])])
 
 # Check if socat is available on system
 AC_ARG_ENABLE([socat],
