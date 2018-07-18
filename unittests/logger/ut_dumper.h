@@ -5,6 +5,7 @@
 #include "utils.h"
 
 #include <cstring>
+#include <sstream>
 
 #include <CppUTest/TestHarness.h>
 

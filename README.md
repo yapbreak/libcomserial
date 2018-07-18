@@ -36,6 +36,10 @@ To have full test support, you need the aditionnal libraries and programs:
 - cpputest
 - gcov and lcov (to get coverage report)
 
+To get full log support, you can install yaplog library available at
+https://gitlab.yapbreak.fr/libraries/libyaplog.
+
+
 ## Compilation
 
 If you clone the repository, you must run the following command before going
