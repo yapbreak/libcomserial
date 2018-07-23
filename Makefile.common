@@ -1,5 +1,6 @@
-AM_CFLAGS = -std=c11 -Wall -Wextra ${extra_CFLAGS}
-AM_CXXFLAGS = -std=c++11 -Wall -Wextra ${extra_CXXFLAGS}
+LOGDEFINES = -DLOG_LEVEL=\"CSER_LOGLEVEL\" -DLOG_DEST=\"CSER_LOGDESTINATION\"
+AM_CFLAGS = ${LOGDEFINES} -std=c11 -Wall -Wextra ${extra_CFLAGS}
+AM_CXXFLAGS = ${LOGDEFINES} -std=c++11 -Wall -Wextra ${extra_CXXFLAGS}
 AM_LDFLAGS = ${extra_LDFLAGS}
 LIBVERSION = -version-info ${VERSION_CURRENT}:${VERSION_REVISION}:${VERSION_AGE}
 

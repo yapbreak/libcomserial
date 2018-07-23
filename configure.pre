@@ -155,7 +155,7 @@ AC_ARG_WITH([yaplog],
 
 have_yaplog=without
 AS_IF([test "x$with_yaplog" != xno],
-      [PKG_CHECK_MODULES([YAPLOG], [yaplog], [have_yaplog=yes], [have_yaplog=no])]
+      [PKG_CHECK_MODULES([YAPLOG], [yaplog >= 2], [have_yaplog=yes], [have_yaplog=no])]
      )
 
 AM_CONDITIONAL([YAPLOG], [test "x${have_yaplog}" = "xyes"])
