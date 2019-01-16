@@ -235,9 +235,6 @@ namespace logger {
             * @brief Additional overload to handle ostream specific IO
             *         manipulators
             *
-            * @param out Internal logger where IO manipulators must aplly.
-            * @param f IO function manipulators.
-            *
             * @return Internal logger instance.
             */
             friend const InternalLog &operator<<(const InternalLog &out,
